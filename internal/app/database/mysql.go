@@ -1,9 +1,9 @@
 package database
 
 import (
-	"terhandle/internal/app/model"
-	"terhandle/internal/app/config"
 	"fmt"
+	"terhandle/internal/app/config"
+	"terhandle/internal/app/model"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -27,5 +27,6 @@ func InitDBMysql(cfg *config.AppConfig) *gorm.DB {
 func InitMigrationMysql(db *gorm.DB) {
 	db.AutoMigrate(&model.Users{})
 	db.AutoMigrate(&model.Achievement{})
-	// db.AutoMigrate(&model.RequestTeknisi{})
+	db.AutoMigrate(&model.RequestTeknisi{})
+	db.AutoMigrate(&model.Foto{})
 }

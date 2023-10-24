@@ -1,7 +1,7 @@
 package jwt
 
 import (
-	
+	"net/http"
 	"os"
 	"time"
 
@@ -34,6 +34,15 @@ func CreateToken (id int,role string)(string,error){
 	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 }
 
+
+func SetTokenCookie(e echo.Context, token string) {
+	cookie := new(http.Cookie)
+	cookie.Name = "token" // Nama cookie
+	cookie.Value = token
+	cookie.Path = "/" // Cookie dapat digunakan di semua path
+
+	e.SetCookie(cookie)
+}
 
 func ExtractToken(e echo.Context) (int,string) {
 	user := e.Get("user").(*jwt.Token)

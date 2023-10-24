@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+
 	//"strings"
 	"terhandle/internal/features/user/dto"
 	"terhandle/internal/features/user/entity"
@@ -30,8 +31,8 @@ func (uc *userHandler) Create(e echo.Context) error {
 	inputmain := dto.RequestToCore(input)
 	err := uc.userService.Create(inputmain)
 	if err != nil {
-		
-		return e.JSON(http.StatusBadRequest, helper.FailedResponse(http.StatusBadRequest,err.Error()))
+
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
 
 	}
 
@@ -43,21 +44,19 @@ func (uc *userHandler) Login(e echo.Context) error {
 	inputmain := dto.RequestLoginToCore(input)
 
 	if err := e.Bind(&inputmain); err != nil {
-		return e.JSON(http.StatusBadRequest, helper.FailedResponse(400,err.Error()))
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
 	}
 
 	fmt.Println(inputmain)
 
 	user, token, err := uc.userService.Login(inputmain.Email, inputmain.Password)
 	if err != nil {
-		return e.JSON(http.StatusBadRequest, helper.FailedResponse(400,err.Error()))
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
 	}
-
+	jwt.SetTokenCookie(e, token)
 	response := dto.ResponseLogin{
-		Name : user.Name,
-		Token: token,
+		Name: user.Nama,
 	}
-
 	return e.JSON(http.StatusOK, helper.SuccessWithDataResponse("Succes Login", response))
 }
 
@@ -66,22 +65,20 @@ func (uc *userHandler) CreateDetail(e echo.Context) error {
 
 	user_id, _ := jwt.ExtractToken(e)
 	if user_id == 0 {
-		return e.JSON(http.StatusUnauthorized, helper.FailedResponse(401,"Unauthorized"))
+		return e.JSON(http.StatusUnauthorized, helper.FailedResponse("Unauthorized"))
 	}
 
 	id, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		return e.JSON(http.StatusBadRequest,helper.FailedResponse(400,"Failed Convert"))
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Failed Convert"))
 	}
 
-	
-
 	if id != user_id {
-        return e.JSON(http.StatusForbidden,helper.FailedResponse(401,"Access denied"))
-    }
+		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
+	}
 
 	if err := e.Bind(&input); err != nil {
-		return e.JSON(http.StatusBadRequest, helper.FailedResponse(400,"Invalid Request"))
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Invalid Request"))
 	}
 
 	err = uc.userService.CreateUpdateDetail(user_id, dto.RequestCreateDetailToCore(input))
@@ -93,7 +90,6 @@ func (uc *userHandler) CreateDetail(e echo.Context) error {
 
 }
 
-
 func (uc *userHandler) CreateTeknisiRole(e echo.Context) error {
 	user_id, _ := jwt.ExtractToken(e)
 	// if user_id == 0 {
@@ -102,16 +98,16 @@ func (uc *userHandler) CreateTeknisiRole(e echo.Context) error {
 	fmt.Println(user_id)
 	id, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		return e.JSON(http.StatusBadRequest,helper.FailedResponse(400,"Failed Convert"))
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Failed Convert"))
 	}
 
 	if id != user_id {
-        return e.JSON(http.StatusForbidden,helper.FailedResponse(401,"Access denied"))
-    }
+		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
+	}
 
 	err = uc.userService.RequestTeknisiRole(user_id)
 	if err != nil {
-		return e.JSON(http.StatusInternalServerError, helper.FailedResponse(500,err.Error()))
+		return e.JSON(http.StatusInternalServerError, helper.FailedResponse(err.Error()))
 	}
 
 	return e.JSON(http.StatusOK, helper.SuccessResponse("success request teknisi"))

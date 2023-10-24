@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+
 	"terhandle/internal/app/model"
 	"terhandle/internal/features/user/entity"
 	"terhandle/internal/utils/helper"
@@ -53,7 +54,6 @@ func (ur *userRepository) Login(email, password string) (entity.Core, string, er
 		return entity.Core{}, "", errors.New("kata sandi salah")
 	}
 
-
 	token, errToken := jwt.CreateToken(int(user.ID), user.Role)
 	if errToken != nil {
 		return entity.Core{}, "", errToken
@@ -74,15 +74,14 @@ func (ur *userRepository) Update(userid int, data entity.Core) error {
 }
 
 func (ur *userRepository) UpdateField(userid int, field string, value string) error {
-    var user model.Users
-    if err := ur.db.Where("id = ? AND (NIK != 0 AND No_telp != 0 AND Address != '')", userid).First(&user).Error; err != nil {
-        return errors.New("lengkapi dahulu NIK, No_telp, Alamat")
-    }
+	var user model.Users
+	if err := ur.db.Where("id = ? AND (NIK != 0 AND No_telp != 0 AND Address != '')", userid).First(&user).Error; err != nil {
+		return errors.New("lengkapi dahulu NIK, No_telp, Alamat")
+	}
 
-    if err := ur.db.Model(&model.Users{}).Where("id = ?", userid).Update(field, value).Error; err != nil {
-        return err
-    }
+	if err := ur.db.Model(&model.Users{}).Where("id = ?", userid).Update(field, value).Error; err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
-

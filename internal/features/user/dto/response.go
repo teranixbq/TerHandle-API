@@ -1,6 +1,5 @@
 package dto
 
 type ResponseLogin struct {
-	Name string `json:"name"`
-	Token string `json:"token"`
+	Name  string `json:"name"`
 }

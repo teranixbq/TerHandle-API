@@ -20,7 +20,7 @@ func NewUserService(ur entity.UserRepositoryInterface) entity.UserServiceInterfa
 }
 
 func (us *userService) Create(payload entity.Core) error {
-	if payload.Email == "" || payload.Password == "" || payload.Name == "" {
+	if payload.Email == "" || payload.Password == "" || payload.Nama == "" {
 		return errors.New("error. email dan password harus diisi")
 	}
 
@@ -70,7 +70,7 @@ func (us *userService) CreateUpdateDetail(userid int, data entity.Core) error {
 
 func (us *userService) RequestTeknisiRole(userid int) error {
 
-	if err := us.userRepository.UpdateField(userid, "status", "unverified-teknisi"); err != nil {
+	if err := us.userRepository.UpdateField(userid, "role", "teknisi"); err != nil {
 		return err
 	}
 

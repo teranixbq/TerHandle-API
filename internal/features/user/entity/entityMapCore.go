@@ -1,20 +1,22 @@
 package entity
 
-import (
-	"terhandle/internal/app/model"
-)
+import "terhandle/internal/app/model"
 
 func UserCoreToUserModel(dataCore Core) model.Users {
 	return model.Users{
 		Role:         dataCore.Role,
-		Name:         dataCore.Name,
+		Nama:         dataCore.Nama,
 		NIK:          dataCore.NIK,
-		Address:      dataCore.Address,
+		Alamat:       dataCore.Alamat,
+		Longitude:    dataCore.Longitude,
+		Latitude:     dataCore.Latitude,
 		No_telp:      dataCore.No_telp,
 		Email:        dataCore.Email,
 		Password:     dataCore.Password,
-		Achievements: ListAchivementCoreToModelAchivement(dataCore.Achievement),
-		Status:			dataCore.Status,
+		Achievements: ListAchivementCoreToModelAchivement(dataCore.Achievements),
+		Status:       dataCore.Status,
+		CreatedAt:    dataCore.CreatedAt,
+		UpdatedAt:    dataCore.UpdatedAt,
 	}
 }
 
@@ -22,10 +24,12 @@ func ListAchivementCoreToModelAchivement(dataCore []AchievementCore) []model.Ach
 	var result []model.Achievement
 	for _, value := range dataCore {
 		var UserAchievement = model.Achievement{
-			Name:      value.Name,
+			UsersID:   value.UsersID,
+			Nama:      value.Nama,
 			Deskripsi: value.Deskripsi,
+			CreatedAt: value.CreatedAt,
+			UpdatedAt: value.UpdatedAt,
 		}
-
 		result = append(result, UserAchievement)
 	}
 	return result
@@ -35,14 +39,16 @@ func UserModelToUserCore(dataModel model.Users) Core {
 	return Core{
 		Id:          int(dataModel.ID),
 		Role:        dataModel.Role,
-		Name:        dataModel.Name,
+		Nama:        dataModel.Nama,
 		NIK:         dataModel.NIK,
-		Address:     dataModel.Address,
+		Alamat:      dataModel.Alamat,
+		Longitude:   dataModel.Longitude,
+		Latitude:    dataModel.Latitude,
 		No_telp:     dataModel.No_telp,
 		Email:       dataModel.Email,
 		Password:    dataModel.Password,
-		Achievement: ListModelAchivementToAchivementCore(dataModel.Achievements),
-		Status:			dataModel.Status,
+		Achievements: ListModelAchivementToAchivementCore(dataModel.Achievements),
+		Status:      dataModel.Status,
 		CreatedAt:   dataModel.CreatedAt,
 		UpdatedAt:   dataModel.UpdatedAt,
 	}
@@ -53,12 +59,12 @@ func ListModelAchivementToAchivementCore(dataModel []model.Achievement) []Achiev
 	for _, value := range dataModel {
 		var UserAchievement = AchievementCore{
 			Id:        value.ID,
-			Name:      value.Name,
+			UsersID:   value.UsersID,
+			Nama:      value.Nama,
 			Deskripsi: value.Deskripsi,
 			CreatedAt: value.CreatedAt,
 			UpdatedAt: value.UpdatedAt,
 		}
-
 		result = append(result, UserAchievement)
 	}
 	return result

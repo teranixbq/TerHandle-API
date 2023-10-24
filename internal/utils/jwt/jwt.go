@@ -1,10 +1,12 @@
 package jwt
 
 import (
+	"net/http"
 	"os"
 	"time"
-	"github.com/joho/godotenv"
+
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 )
@@ -12,12 +14,14 @@ import (
 
 
 func JWTMiddleware() echo.MiddlewareFunc {
-	godotenv.Load()
-	return echojwt.WithConfig(echojwt.Config{
-		SigningKey:    []byte(os.Getenv("JWT_SECRET")),
-		SigningMethod: "HS256",
-	})
+    godotenv.Load()
+    return echojwt.WithConfig(echojwt.Config{
+        SigningKey:    []byte(os.Getenv("JWT_SECRET")),
+        SigningMethod: "HS256",
+        TokenLookup:   "cookie:token", 
+    })
 }
+
 
 func CreateToken (id int,role string)(string,error){
 	godotenv.Load()
@@ -28,6 +32,16 @@ func CreateToken (id int,role string)(string,error){
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+}
+
+
+func SetTokenCookie(e echo.Context, token string) {
+	cookie := new(http.Cookie)
+	cookie.Name = "token" // Nama cookie
+	cookie.Value = token
+	cookie.Path = "/" // Cookie dapat digunakan di semua path
+
+	e.SetCookie(cookie)
 }
 
 func ExtractToken(e echo.Context) (int,string) {

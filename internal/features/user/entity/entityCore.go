@@ -8,6 +8,7 @@ import (
 type Core struct {
 	Id          int
 	Role         string 
+	Profesi      string
 	Nama         string 
 	NIK          int   
 	Alamat       string

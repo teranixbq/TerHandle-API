@@ -19,6 +19,7 @@ func UserRoute(e *echo.Echo, db *gorm.DB) {
 	e.PUT("/users/:id", userHandler.CreateDetail, jwt.JWTMiddleware())
 	e.PUT("/request/:id", userHandler.CreateTeknisiRole, jwt.JWTMiddleware())
 	e.POST("/login", userHandler.Login)
+	e.GET("/home", userHandler.SelectAll)
 
 
 }

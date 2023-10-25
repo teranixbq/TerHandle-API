@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"terhandle/internal/features/user/dto"
 	"terhandle/internal/features/user/entity"
 
@@ -20,6 +21,7 @@ func NewUserService(ur entity.UserRepositoryInterface) entity.UserServiceInterfa
 }
 
 func (us *userService) Create(payload entity.Core) error {
+	fmt.Println(payload.Email,payload.Password,payload.Nama)
 	if payload.Email == "" || payload.Password == "" || payload.Nama == "" {
 		return errors.New("error. email dan password harus diisi")
 	}
@@ -75,4 +77,12 @@ func (us *userService) RequestTeknisiRole(userid int) error {
 	}
 
 	return nil
+}
+
+func (us *userService) GetAll() ([]entity.Core, error) {
+	users, err := us.userRepository.SelectAll()
+	if err != nil {
+		return nil, err
+	}
+	return users, err
 }

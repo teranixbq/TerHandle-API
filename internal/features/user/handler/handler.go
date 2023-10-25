@@ -86,7 +86,7 @@ func (uc *userHandler) CreateDetail(e echo.Context) error {
 		return err
 	}
 
-	return e.JSON(http.StatusOK, helper.SuccessResponse("success deactivate account "))
+	return e.JSON(http.StatusOK, helper.SuccessResponse("success memperbarui data"))
 
 }
 
@@ -112,4 +112,15 @@ func (uc *userHandler) CreateTeknisiRole(e echo.Context) error {
 
 	return e.JSON(http.StatusOK, helper.SuccessResponse("success request teknisi"))
 
+}
+func (uc *userHandler) SelectAll(e echo.Context) error {
+	users, err := uc.userService.GetAll()
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, helper.FailedResponse("Error"))
+	}
+
+	// Menggunakan CoreToResponseList untuk mengubah data ke format yang diinginkan.
+	respons := dto.CoreToResponseList(users)
+
+	return e.JSON(http.StatusOK, helper.SuccessWithDataResponse("success", respons))
 }

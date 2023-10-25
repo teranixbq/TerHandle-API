@@ -75,7 +75,7 @@ func (ur *userRepository) Update(userid int, data entity.Core) error {
 
 func (ur *userRepository) UpdateField(userid int, field string, value string) error {
 	var user model.Users
-	if err := ur.db.Where("id = ? AND (NIK != 0 AND No_telp != 0 AND Address != '')", userid).First(&user).Error; err != nil {
+	if err := ur.db.Where("id = ? AND (NIK != 0 AND No_telp != 0 AND Alamat != '')", userid).First(&user).Error; err != nil {
 		return errors.New("lengkapi dahulu NIK, No_telp, Alamat")
 	}
 
@@ -84,4 +84,15 @@ func (ur *userRepository) UpdateField(userid int, field string, value string) er
 	}
 
 	return nil
+}
+
+func (repo *userRepository) SelectAll() ([]entity.Core, error) {
+	var usersData []model.Users
+	tx := repo.db.Where("role = ?", "teknisi").Find(&usersData)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	var usersCoreAll []entity.Core = entity.UserModelToUserCoreList(usersData)
+
+	return usersCoreAll, nil
 }

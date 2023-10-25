@@ -9,6 +9,7 @@ import (
 type Users struct {
 	gorm.Model
 	Role         string `gorm:"type:enum('admin', 'user', 'teknisi');default:'user'"`
+	Profesi      string	`json:"profesi" form:"profesi"`
 	Nama         string `json:"nama" form:"nama"`
 	NIK          int    `json:"nik" form:"nik"`
 	Alamat       string `json:"alamat" form:"alamat"`

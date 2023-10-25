@@ -1,10 +1,13 @@
 package entity
 
-import "terhandle/internal/app/model"
+import (
+	"terhandle/internal/app/model"
+)
 
 func UserCoreToUserModel(dataCore Core) model.Users {
 	return model.Users{
 		Role:         dataCore.Role,
+		Profesi:      dataCore.Profesi,
 		Nama:         dataCore.Nama,
 		NIK:          dataCore.NIK,
 		Alamat:       dataCore.Alamat,
@@ -37,20 +40,21 @@ func ListAchivementCoreToModelAchivement(dataCore []AchievementCore) []model.Ach
 
 func UserModelToUserCore(dataModel model.Users) Core {
 	return Core{
-		Id:          int(dataModel.ID),
-		Role:        dataModel.Role,
-		Nama:        dataModel.Nama,
-		NIK:         dataModel.NIK,
-		Alamat:      dataModel.Alamat,
-		Longitude:   dataModel.Longitude,
-		Latitude:    dataModel.Latitude,
-		No_telp:     dataModel.No_telp,
-		Email:       dataModel.Email,
-		Password:    dataModel.Password,
+		Id:           int(dataModel.ID),
+		Role:         dataModel.Role,
+		Profesi:      dataModel.Profesi,
+		Nama:         dataModel.Nama,
+		NIK:          dataModel.NIK,
+		Alamat:       dataModel.Alamat,
+		Longitude:    dataModel.Longitude,
+		Latitude:     dataModel.Latitude,
+		No_telp:      dataModel.No_telp,
+		Email:        dataModel.Email,
+		Password:     dataModel.Password,
 		Achievements: ListModelAchivementToAchivementCore(dataModel.Achievements),
-		Status:      dataModel.Status,
-		CreatedAt:   dataModel.CreatedAt,
-		UpdatedAt:   dataModel.UpdatedAt,
+		Status:       dataModel.Status,
+		CreatedAt:    dataModel.CreatedAt,
+		UpdatedAt:    dataModel.UpdatedAt,
 	}
 }
 
@@ -68,4 +72,12 @@ func ListModelAchivementToAchivementCore(dataModel []model.Achievement) []Achiev
 		result = append(result, UserAchievement)
 	}
 	return result
+}
+
+func UserModelToUserCoreList(dataModel []model.Users) []Core {
+	var ListUserModel []Core
+	for _, v := range dataModel {
+		ListUserModel = append(ListUserModel, UserModelToUserCore(v))
+	}
+	return ListUserModel
 }

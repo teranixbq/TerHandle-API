@@ -43,7 +43,7 @@ func (ur *userRequestRepository) SelectByIdAndRole(userid, teknisiid int, role_u
 	return nil
 }
 
-func (ur *userRequestRepository) SelectById(userid int) ([]entity.Core, error) {
+func (ur *userRequestRepository) SelectAllById(userid int) ([]entity.Core, error) {
 	var userHistory []model.RequestTeknisi
 
 	if err := ur.db.Preload("Foto").Find(&userHistory).Error; err != nil {
@@ -51,6 +51,17 @@ func (ur *userRequestRepository) SelectById(userid int) ([]entity.Core, error) {
 	}
 
 	var usersHistory []entity.Core = entity.UserModelToUserCoreList(userHistory)
+	return usersHistory, nil
+}
+
+func (ur *userRequestRepository) SelectById(user_id,id int) ([]entity.Core, error) {
+	var userHistory []model.RequestTeknisi
+
+	if err := ur.db.Preload("Foto").Where("users_id = ? AND id = ? ",user_id,id).Find(&userHistory).Error; err != nil {
+		return nil, errors.New("gagal mengambil data")
+	}
+
+	var usersHistory = entity.UserModelToUserCoreList(userHistory)
 	return usersHistory, nil
 }
 

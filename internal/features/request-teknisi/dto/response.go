@@ -96,12 +96,22 @@ func CoreToResponseHistoryTeknisiList(dataCore []entity.Core) []ResponHistoryTek
 	return result
 }
 
-func ResponsesHistory(data []entity.Core, role string) interface{} {
+func ResponsesHistoryList(data []entity.Core, role string) interface{} {
     if role == "user" {
         return CoreToResponseHistoryUserList(data)
     }
     if role == "teknisi" {
         return CoreToResponseHistoryTeknisiList(data)
+    }
+    return nil
+}
+
+func ResponsesHistory(data entity.Core, role string) interface{} {
+    if role == "user" {
+        return CoreToResponseHistoryTeknisi(data)
+    }
+    if role == "teknisi" {
+        return CoreToResponseHistoryTeknisi(data)
     }
     return nil
 }

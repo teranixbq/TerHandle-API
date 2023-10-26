@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -48,7 +49,7 @@ func (uc *userHandler) Create(e echo.Context) error {
 	return e.JSON(http.StatusOK, helper.SuccessResponse("Succes Request Teknisi"))
 }
 
-func (uc *userHandler) GetHistoryRequest(e echo.Context) error {
+func (uc *userHandler) GetAllHistoryRequest(e echo.Context) error {
 	role_id, role := jwt.ExtractToken(e)
 	if role_id == 0 {
 		return e.JSON(http.StatusUnauthorized, helper.FailedResponse("Unauthorized"))
@@ -63,13 +64,41 @@ func (uc *userHandler) GetHistoryRequest(e echo.Context) error {
 		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
 	}
 
-	history,err := uc.userService.GetById(role_id)
+	history, err := uc.userService.GetAllById(role_id)
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, helper.FailedResponse(err.Error()))
 	}
-	
-	respon := dto.ResponsesHistory(history,role)
-	return e.JSON(http.StatusOK, helper.SuccessWithDataResponse("succes",respon))
+
+	respon := dto.ResponsesHistoryList(history, role)
+	return e.JSON(http.StatusOK, helper.SuccessWithDataResponse("succes", respon))
+
+}
+
+func (uc *userHandler) GetHistoryRequestById(e echo.Context) error {
+	user_id, role := jwt.ExtractToken(e)
+	if user_id == 0 {
+		return e.JSON(http.StatusUnauthorized, helper.FailedResponse("Unauthorized"))
+	}
+
+	id, idErr := strconv.Atoi(e.Param("id"))
+	id_request, idRequestErr := strconv.Atoi(e.Param("id_request"))
+
+	if idErr != nil || idRequestErr != nil {
+	    return e.JSON(http.StatusBadRequest, helper.FailedResponse("Failed Convert"))
+	}
+	fmt.Println(id)
+	fmt.Println(id_request)
+	if id != user_id {
+		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
+	}
+
+	result, err := uc.userService.GetById(id,id_request)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, helper.FailedResponse(err.Error()))
+	}
+
+	respon := dto.ResponsesHistoryList(result, role)
+	return e.JSON(http.StatusOK, helper.SuccessWithDataResponse("succes", respon))
 
 }
 

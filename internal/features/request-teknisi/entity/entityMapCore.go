@@ -1,0 +1,67 @@
+package entity
+
+import (
+	"terhandle/internal/app/model"
+)
+
+func UserCoreToUserModel(dataCore Core) model.RequestTeknisi {
+	return model.RequestTeknisi{
+		UsersID:   dataCore.UsersID,
+		TeknisiID: dataCore.TeknisiID,
+		Foto:      ListFotoCoreToModelFoto(dataCore.Foto),
+		Deskripsi: dataCore.Deskripsi,
+		Jarak:     dataCore.Jarak,
+		Biaya:     dataCore.Biaya,
+		Status:    dataCore.Status,
+		CreatedAt: dataCore.CreatedAt,
+		UpdatedAt: dataCore.UpdatedAt,
+	}
+}
+
+func ListFotoCoreToModelFoto(dataCore []FotoCore) []model.Foto {
+	var result []model.Foto
+	for _, value := range dataCore {
+		var UserFoto = model.Foto{
+			RequestTeknisiID: value.RequestTeknisiID,
+			Foto:             value.Foto,
+		}
+		result = append(result, UserFoto)
+	}
+	return result
+}
+
+func UserModelToUserCore(dataModel model.RequestTeknisi) Core {
+	return Core{
+		Id:        int(dataModel.ID),
+		UsersID:   dataModel.UsersID,
+		TeknisiID: dataModel.TeknisiID,
+		Foto:      ListModelFotoToFotoCore(dataModel.Foto),
+		Deskripsi: dataModel.Deskripsi,
+		Jarak:     dataModel.Jarak,
+		Biaya:     dataModel.Biaya,
+		Status:    dataModel.Status,
+		CreatedAt: dataModel.CreatedAt,
+		UpdatedAt: dataModel.UpdatedAt,
+	}
+}
+
+func ListModelFotoToFotoCore(dataModel []model.Foto) []FotoCore {
+	var result []FotoCore
+	for _, value := range dataModel {
+		var UserFoto = FotoCore{
+			Id:               int(value.ID),
+			RequestTeknisiID: value.RequestTeknisiID,
+			Foto:             value.Foto,
+		}
+		result = append(result, UserFoto)
+	}
+	return result
+}
+
+func UserModelToUserCoreList(dataModel []model.RequestTeknisi) []Core {
+	var ListUserRequestModel []Core
+	for _, v := range dataModel {
+		ListUserRequestModel = append(ListUserRequestModel, UserModelToUserCore(v))
+	}
+	return ListUserRequestModel
+}

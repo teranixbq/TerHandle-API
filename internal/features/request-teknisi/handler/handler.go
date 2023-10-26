@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	
 	"net/http"
 	"strconv"
 
@@ -86,8 +86,7 @@ func (uc *userHandler) GetHistoryRequestById(e echo.Context) error {
 	if idErr != nil || idRequestErr != nil {
 		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Failed Convert"))
 	}
-	fmt.Println(id)
-	fmt.Println(id_request)
+
 	if id != user_id {
 		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
 	}

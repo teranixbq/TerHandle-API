@@ -46,7 +46,7 @@ func (ur *userRequestRepository) SelectByIdAndRole(userid, teknisiid int, role_u
 func (ur *userRequestRepository) SelectAllById(userid int) ([]entity.Core, error) {
 	var userHistory []model.RequestTeknisi
 
-	if err := ur.db.Preload("Foto").Where("users_id = ? ", userid).Find(&userHistory).Error; err != nil {
+	if err := ur.db.Preload("Foto").Where("users_id = ? OR teknisi_id = ?", userid,userid).Find(&userHistory).Error; err != nil {
 		return nil, errors.New("gagal mengambil data")
 	}
 
@@ -57,7 +57,7 @@ func (ur *userRequestRepository) SelectAllById(userid int) ([]entity.Core, error
 func (ur *userRequestRepository) SelectById(user_id, id int) ([]entity.Core, error) {
 	var userHistory []model.RequestTeknisi
 
-	if err := ur.db.Preload("Foto").Where("users_id = ? AND id = ? ", user_id, id).Find(&userHistory).Error; err != nil {
+	if err := ur.db.Preload("Foto").Where("(users_id = ? OR teknisi_id = ?) AND id = ?",user_id, user_id, id).Find(&userHistory).Error; err != nil {
 		return nil, errors.New("gagal mengambil data")
 	}
 

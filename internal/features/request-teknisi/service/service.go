@@ -42,9 +42,46 @@ func (us *userService) CreateUpdateDetail(userid int, data entity.Core) error {
 	return nil
 }
 
-func (us *userService) RequestTeknisiRole(userid int) error {
+func (us *userService) ClaimRequest(id_request int, data entity.Core) error {
 
-	if err := us.userRepository.UpdateField(userid, "role", "teknisi"); err != nil {
+	if data.Menunggu_konfirmasi {
+
+		if err := us.userRepository.UpdateField(id_request, "status", "menunggu konfirmasi"); err != nil {
+			return err
+		}
+	} else if data.Dibatalkan {
+		if err := us.userRepository.UpdateField(id_request, "status", "dibatalkan"); err != nil {
+			return err
+		}
+	}
+
+	if err := us.userRepository.UpdateClaims(id_request, data); err != nil {
+		return err
+	}
+
+	if err := us.userRepository.UpdateField(id_request, "status", "konfirmasi biaya"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (us *userService) KonfirmasiBiaya(id_request int, data entity.Core) error {
+	if data.Dibatalkan {
+		if err := us.userRepository.UpdateField(id_request, "status", "dibatalkan"); err != nil {
+			return err
+		}
+	} else if data.Selesai {
+		if err := us.userRepository.UpdateField(id_request, "status", "selesai"); err != nil {
+			return err
+		}
+	} else {
+		if err := us.userRepository.UpdateField(id_request, "status", "diproses"); err != nil {
+			return err
+		}
+	}
+
+	if err := us.userRepository.UpdateStatusClaims(id_request, data); err != nil {
 		return err
 	}
 

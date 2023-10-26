@@ -34,26 +34,30 @@ type Achievement struct {
 }
 
 type RequestTeknisi struct {
-    gorm.Model
-    UsersID       uint   `json:"user_id" form:"user_id" gorm:"foreignKey:ID"`
-    TeknisiID     uint   `json:"teknisi_id" form:"teknisi_id" gorm:"foreignKey:ID"`
-    Foto         []Foto `gorm:"foreignKey:RequestTeknisiID"` // Menambahkan foreign key ke entitas Foto
-    Deskripsi     string `json:"deskripsi" form:"deskripsi"`
-    Jarak         int    `json:"jarak" form:"jarak"`
-    Biaya         float64
-    Status        string `gorm:"type:enum('menunggu diproses','diproses', 'ditolak', 'selesai');default:'menunggu diproses'"`
-    CreatedAt     time.Time `gorm:"type:DATETIME(0)"`
-    UpdatedAt     time.Time `gorm:"type:DATETIME(0)"`
-    RequesterUser Users     `gorm:"foreignKey:UsersID"`
-    TargetUser    Users     `gorm:"foreignKey:TeknisiID"`
+	gorm.Model
+	UsersID             uint   `json:"user_id" form:"user_id" gorm:"foreignKey:ID"`
+	TeknisiID           uint   `json:"teknisi_id" form:"teknisi_id" gorm:"foreignKey:ID"`
+	Foto                []Foto `gorm:"foreignKey:RequestTeknisiID"`
+	Deskripsi           string `json:"deskripsi" form:"deskripsi"`
+	Jarak               int    `json:"jarak" form:"jarak"`
+	Biaya               float64
+	Status              string    `gorm:"type:enum('menunggu diproses','konfirmasi biaya','menunggu konfimasi','diproses', 'dibatalkan', 'selesai');default:'menunggu diproses'"`
+	Diproses            bool      `json:"diproses" form:"diproses"`
+	Konfirmasi_biaya    bool      `json:"konfirmasi_biaya" form:"konfirmasi_biaya"`
+	Menunggu_konfirmasi bool      `json:"menunggu_konfirmasi" form:"menunggu_konfirmasi"`
+	Dibatalkan          bool      `json:"dibatalkan" form:"dibatalkan"`
+	Selesai             bool      `json:"selesai" form:"selesai"`
+	CreatedAt           time.Time `gorm:"type:DATETIME(0)"`
+	UpdatedAt           time.Time `gorm:"type:DATETIME(0)"`
+	RequesterUser       Users     `gorm:"foreignKey:UsersID"`
+	TargetUser          Users     `gorm:"foreignKey:TeknisiID"`
 }
 
 type Foto struct {
-    gorm.Model
-    RequestTeknisiID uint
-    Foto             string `json:"foto" form:"foto"`
+	gorm.Model
+	RequestTeknisiID uint
+	Foto             string `json:"foto" form:"foto"`
 }
-
 
 type Voucher struct {
 	gorm.Model

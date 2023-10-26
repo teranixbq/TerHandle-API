@@ -5,22 +5,27 @@ import (
 )
 
 type Core struct {
-	Id        int
-	UsersID   uint
-	TeknisiID uint
-	Foto      []FotoCore
-	Deskripsi string
-	Jarak     int
-	Biaya     float64
-	Status    string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Id                  int
+	UsersID             uint
+	TeknisiID           uint
+	Foto                []FotoCore
+	Deskripsi           string
+	Jarak               int
+	Biaya               float64
+	Diproses            bool
+	Konfirmasi_biaya    bool
+	Menunggu_konfirmasi bool
+	Dibatalkan          bool
+	Selesai             bool
+	Status              string
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
 }
 
 type FotoCore struct {
 	Id               int
 	RequestTeknisiID uint
-	Foto             string 
+	Foto             string
 }
 
 // type Core struct {

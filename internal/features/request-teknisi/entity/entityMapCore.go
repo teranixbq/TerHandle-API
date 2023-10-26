@@ -6,15 +6,20 @@ import (
 
 func UserCoreToUserModel(dataCore Core) model.RequestTeknisi {
 	return model.RequestTeknisi{
-		UsersID:   dataCore.UsersID,
-		TeknisiID: dataCore.TeknisiID,
-		Foto:      ListFotoCoreToModelFoto(dataCore.Foto),
-		Deskripsi: dataCore.Deskripsi,
-		Jarak:     dataCore.Jarak,
-		Biaya:     dataCore.Biaya,
-		Status:    dataCore.Status,
-		CreatedAt: dataCore.CreatedAt,
-		UpdatedAt: dataCore.UpdatedAt,
+		UsersID:             dataCore.UsersID,
+		TeknisiID:           dataCore.TeknisiID,
+		Foto:                ListFotoCoreToModelFoto(dataCore.Foto),
+		Deskripsi:           dataCore.Deskripsi,
+		Jarak:               dataCore.Jarak,
+		Biaya:               dataCore.Biaya,
+		Diproses:            dataCore.Diproses,
+		Konfirmasi_biaya:    dataCore.Konfirmasi_biaya,
+		Menunggu_konfirmasi: dataCore.Menunggu_konfirmasi,
+		Dibatalkan:          dataCore.Dibatalkan,
+		Selesai:             dataCore.Selesai,
+		Status:              dataCore.Status,
+		CreatedAt:           dataCore.CreatedAt,
+		UpdatedAt:           dataCore.UpdatedAt,
 	}
 }
 
@@ -32,16 +37,21 @@ func ListFotoCoreToModelFoto(dataCore []FotoCore) []model.Foto {
 
 func UserModelToUserCore(dataModel model.RequestTeknisi) Core {
 	return Core{
-		Id:        int(dataModel.ID),
-		UsersID:   dataModel.UsersID,
-		TeknisiID: dataModel.TeknisiID,
-		Foto:      ListModelFotoToFotoCore(dataModel.Foto),
-		Deskripsi: dataModel.Deskripsi,
-		Jarak:     dataModel.Jarak,
-		Biaya:     dataModel.Biaya,
-		Status:    dataModel.Status,
-		CreatedAt: dataModel.CreatedAt,
-		UpdatedAt: dataModel.UpdatedAt,
+		Id:                  int(dataModel.ID),
+		UsersID:             dataModel.UsersID,
+		TeknisiID:           dataModel.TeknisiID,
+		Foto:                ListModelFotoToFotoCore(dataModel.Foto),
+		Deskripsi:           dataModel.Deskripsi,
+		Jarak:               dataModel.Jarak,
+		Biaya:               dataModel.Biaya,
+		Diproses:            dataModel.Diproses,
+		Konfirmasi_biaya:    dataModel.Konfirmasi_biaya,
+		Menunggu_konfirmasi: dataModel.Menunggu_konfirmasi,
+		Dibatalkan:          dataModel.Dibatalkan,
+		Selesai:             dataModel.Selesai,
+		Status:              dataModel.Status,
+		CreatedAt:           dataModel.CreatedAt,
+		UpdatedAt:           dataModel.UpdatedAt,
 	}
 }
 

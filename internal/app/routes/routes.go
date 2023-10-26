@@ -33,6 +33,7 @@ func UserRoute(e *echo.Echo, db *gorm.DB) {
 	e.POST("/request", requestHandler.Create, jwt.JWTMiddleware())
 	e.GET("/request/history/:id", requestHandler.GetAllHistoryRequest, jwt.JWTMiddleware())
 	e.GET("/request/:id/:id_request", requestHandler.GetHistoryRequestById, jwt.JWTMiddleware())
+	e.PUT("/request/:id/:id_request", requestHandler.UpdateStatusRequest, jwt.JWTMiddleware())
 	//e.PUT("/request/:id", requestHandler.Create, jwt.JWTMiddleware())
 
 }

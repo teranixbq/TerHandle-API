@@ -46,7 +46,7 @@ func (ur *userRequestRepository) SelectByIdAndRole(userid, teknisiid int, role_u
 func (ur *userRequestRepository) SelectAllById(userid int) ([]entity.Core, error) {
 	var userHistory []model.RequestTeknisi
 
-	if err := ur.db.Preload("Foto").Find(&userHistory).Error; err != nil {
+	if err := ur.db.Preload("Foto").Where("users_id = ? ", userid).Find(&userHistory).Error; err != nil {
 		return nil, errors.New("gagal mengambil data")
 	}
 
@@ -54,10 +54,10 @@ func (ur *userRequestRepository) SelectAllById(userid int) ([]entity.Core, error
 	return usersHistory, nil
 }
 
-func (ur *userRequestRepository) SelectById(user_id,id int) ([]entity.Core, error) {
+func (ur *userRequestRepository) SelectById(user_id, id int) ([]entity.Core, error) {
 	var userHistory []model.RequestTeknisi
 
-	if err := ur.db.Preload("Foto").Where("users_id = ? AND id = ? ",user_id,id).Find(&userHistory).Error; err != nil {
+	if err := ur.db.Preload("Foto").Where("users_id = ? AND id = ? ", user_id, id).Find(&userHistory).Error; err != nil {
 		return nil, errors.New("gagal mengambil data")
 	}
 
@@ -76,12 +76,44 @@ func (ur *userRequestRepository) Update(userid int, data entity.Core) error {
 }
 
 func (ur *userRequestRepository) UpdateField(userid int, field string, value string) error {
-	var user model.Users
-	if err := ur.db.Where("id = ? AND (NIK != 0 AND No_telp != 0 AND Alamat != '')", userid).First(&user).Error; err != nil {
-		return errors.New("lengkapi dahulu NIK, No_telp, Alamat")
+
+	if err := ur.db.Model(&model.RequestTeknisi{}).Where("id = ?", userid).Update(field, value).Error; err != nil {
+		return err
 	}
 
-	if err := ur.db.Model(&model.Users{}).Where("id = ?", userid).Update(field, value).Error; err != nil {
+	return nil
+}
+
+func (ur *userRequestRepository) UpdateClaims(id int, data entity.Core) error {
+	request := entity.UserCoreToUserModel(data)
+	if err := ur.db.First(&request, id).Error; err != nil {
+		return err
+	}
+
+	request.Biaya = data.Biaya
+	request.Diproses = data.Diproses
+	request.Dibatalkan = data.Dibatalkan
+	request.Menunggu_konfirmasi = data.Menunggu_konfirmasi
+
+	if err := ur.db.Save(&request).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ur *userRequestRepository) UpdateStatusClaims(id int, data entity.Core) error {
+	request := entity.UserCoreToUserModel(data)
+	if err := ur.db.First(&request, id).Error; err != nil {
+		return err
+	}
+
+	request.Diproses = data.Diproses
+	request.Konfirmasi_biaya = data.Konfirmasi_biaya
+	request.Dibatalkan = data.Dibatalkan
+	request.Selesai = data.Selesai
+
+	if err := ur.db.Save(&request).Error; err != nil {
 		return err
 	}
 

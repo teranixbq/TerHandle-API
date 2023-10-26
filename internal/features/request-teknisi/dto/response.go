@@ -106,12 +106,4 @@ func ResponsesHistoryList(data []entity.Core, role string) interface{} {
     return nil
 }
 
-func ResponsesHistory(data entity.Core, role string) interface{} {
-    if role == "user" {
-        return CoreToResponseHistoryTeknisi(data)
-    }
-    if role == "teknisi" {
-        return CoreToResponseHistoryTeknisi(data)
-    }
-    return nil
-}
+

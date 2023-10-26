@@ -3,9 +3,9 @@ package dto
 import "terhandle/internal/features/request-teknisi/entity"
 
 type RequestCreate struct {
-	UsersID   uint          `json:"user_id" form:"user_id"`
-	TeknisiID uint          `json:"teknisi_id" form:"teknisi_id"`
-	
+	UsersID   uint `json:"user_id" form:"user_id"`
+	TeknisiID uint `json:"teknisi_id" form:"teknisi_id"`
+
 	Foto      []RequestFoto `json:"foto" form:"foto"`
 	Deskripsi string        `json:"deskripsi" form:"deskripsi"`
 	Jarak     int           `json:"jarak" form:"jarak"`
@@ -38,26 +38,35 @@ func ListRequestFotoToFotoCore(dataCore []RequestFoto) []entity.FotoCore {
 	return result
 }
 
-// type RequestCreateDetail struct {
-// 	Profesi      string
-// 	NIK          int
-// 	Alamat       string
-// 	Longitude    string
-// 	Latitude     string
-// 	No_telp      int
-// 	Email        string
-// 	Achievements []entity.AchievementCore
-// }
+type RequestClaims struct {
+	Biaya               float64
+	Diproses            bool
 
-// func RequestCreateDetailToCore(dataRequest RequestCreateDetail) entity.Core {
-// 	return entity.Core{
-// 		Profesi:      dataRequest.Profesi,
-// 		NIK:          dataRequest.NIK,
-// 		Alamat:       dataRequest.Alamat,
-// 		Longitude:    dataRequest.Longitude,
-// 		Latitude:     dataRequest.Latitude,
-// 		No_telp:      dataRequest.No_telp,
-// 		Email:        dataRequest.Email,
-// 		Achievements: dataRequest.Achievements,
-// 	}
-// }
+}
+
+func RequestClaimsToCore(dataRequest RequestClaims) entity.Core {
+	return entity.Core{
+
+		Biaya:               dataRequest.Biaya,
+		Diproses:            dataRequest.Diproses,
+
+	}
+}
+
+type RequestUpdateStatus struct {
+	Diproses            bool
+	Konfirmasi_biaya    bool
+	Menunggu_konfirmasi bool
+	Dibatalkan          bool
+	Selesai             bool
+}
+
+func RequestUpdateStatusToCore(dataRequest RequestUpdateStatus) entity.Core {
+	return entity.Core{
+		Diproses:            dataRequest.Diproses,
+		Konfirmasi_biaya:    dataRequest.Konfirmasi_biaya,
+		Menunggu_konfirmasi: dataRequest.Dibatalkan,
+		Dibatalkan:          dataRequest.Dibatalkan,
+		Selesai:             dataRequest.Selesai,
+	}
+}

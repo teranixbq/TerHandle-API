@@ -2,8 +2,11 @@ package repository
 
 import (
 	"errors"
+
+
 	"terhandle/internal/app/model"
 	"terhandle/internal/features/request-teknisi/entity"
+	"terhandle/internal/utils/gmaps"
 
 	"gorm.io/gorm"
 )
@@ -19,11 +22,27 @@ func New(db *gorm.DB) entity.UserRequestRepositoryInterface {
 }
 
 func (ur *userRequestRepository) Insert(data entity.Core) error {
+	userLatLong,teknisiLatLong  := model.Users{},model.Users{}
+	
+	if err := ur.db.Where("id = ? AND role = 'user'", data.UsersID).First(&userLatLong).Error; err != nil {
+		return err
+	}
 
+	if err := ur.db.Where("id = ? AND role = 'teknisi'", data.TeknisiID).First(&teknisiLatLong).Error; err != nil {
+		return err
+	}
+
+	distance, err := gmaps.CalculateDistanceFromGMaps(userLatLong.Latitude, userLatLong.Longitude, teknisiLatLong.Latitude, teknisiLatLong.Longitude)
+	if err != nil {
+		return err
+	}
+
+	data.Jarak = distance
 	user := entity.UserCoreToUserModel(data)
 	if err := ur.db.Create(&user).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -46,7 +65,7 @@ func (ur *userRequestRepository) SelectByIdAndRole(userid, teknisiid int, role_u
 func (ur *userRequestRepository) SelectAllById(userid int) ([]entity.Core, error) {
 	var userHistory []model.RequestTeknisi
 
-	if err := ur.db.Preload("Foto").Where("users_id = ? OR teknisi_id = ?", userid,userid).Find(&userHistory).Error; err != nil {
+	if err := ur.db.Preload("Foto").Where("users_id = ? OR teknisi_id = ?", userid, userid).Find(&userHistory).Error; err != nil {
 		return nil, errors.New("gagal mengambil data")
 	}
 
@@ -57,8 +76,12 @@ func (ur *userRequestRepository) SelectAllById(userid int) ([]entity.Core, error
 func (ur *userRequestRepository) SelectById(user_id, id int) ([]entity.Core, error) {
 	var userHistory []model.RequestTeknisi
 
-	if err := ur.db.Preload("Foto").Where("(users_id = ? OR teknisi_id = ?) AND id = ?",user_id, user_id, id).Find(&userHistory).Error; err != nil {
+	if err := ur.db.Preload("Foto").Where("(users_id = ? OR teknisi_id = ?) AND id = ?", user_id, user_id, id).Find(&userHistory).Error; err != nil {
 		return nil, errors.New("gagal mengambil data")
+	}
+
+	if len(userHistory) == 0 {
+		return nil, errors.New("data tidak ada")
 	}
 
 	var usersHistory = entity.UserModelToUserCoreList(userHistory)
@@ -102,9 +125,14 @@ func (ur *userRequestRepository) UpdateClaims(id int, data entity.Core) error {
 	return nil
 }
 
-func (ur *userRequestRepository) UpdateStatusClaims(id int, data entity.Core) error {
+func (ur *userRequestRepository) UpdateStatusClaims(id_user, id_request int, data entity.Core) error {
 	request := entity.UserCoreToUserModel(data)
-	if err := ur.db.First(&request, id).Error; err != nil {
+	result := model.RequestTeknisi{}
+	if err := ur.db.Where("users_id = ? AND id = ?", id_user, id_request).First(&result).Error; err != nil {
+		return errors.New("data tidak ada")
+	}
+
+	if err := ur.db.First(&request, id_request).Error; err != nil {
 		return err
 	}
 

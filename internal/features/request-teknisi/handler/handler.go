@@ -1,7 +1,6 @@
 package handler
 
 import (
-	
 	"net/http"
 	"strconv"
 
@@ -101,7 +100,7 @@ func (uc *userHandler) GetHistoryRequestById(e echo.Context) error {
 
 }
 func (uc *userHandler) UpdateStatusRequest(e echo.Context) error {
-	
+
 	user_id, role := jwt.ExtractToken(e)
 	if user_id == 0 {
 		return e.JSON(http.StatusUnauthorized, helper.FailedResponse("Unauthorized"))
@@ -138,7 +137,7 @@ func (uc *userHandler) UpdateStatusRequest(e echo.Context) error {
 		}
 
 		inputmodel := dto.RequestUpdateStatusToCore(input)
-		err := uc.userService.KonfirmasiBiaya(id_request, inputmodel)
+		err := uc.userService.KonfirmasiBiaya(id, id_request, inputmodel)
 		if err != nil {
 			return e.JSON(http.StatusInternalServerError, helper.FailedResponse(err.Error()))
 		}

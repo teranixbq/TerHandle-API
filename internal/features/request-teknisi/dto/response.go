@@ -7,7 +7,7 @@ type ResponHistoryUser struct {
 	TeknisiID uint
 	Foto      []ResponFotoUser
 	Deskripsi string
-	Jarak     int
+	Jarak     float64
 	Biaya     float64
 	Status    string
 }
@@ -33,7 +33,7 @@ func ListFotoCoreToResponFotoUser(dataCore []entity.FotoCore) []ResponFotoUser {
 	var result []ResponFotoUser
 	for _, value := range dataCore {
 		var UserRequestFoto = ResponFotoUser{
-			Id: value.Id,
+			Id:   value.Id,
 			Foto: value.Foto,
 		}
 		result = append(result, UserRequestFoto)
@@ -51,10 +51,10 @@ func CoreToResponseHistoryUserList(dataCore []entity.Core) []ResponHistoryUser {
 
 type ResponHistoryTeknisi struct {
 	Id        int
-	UsersID uint
+	UsersID   uint
 	Foto      []ResponFotoTeknisi
 	Deskripsi string
-	Jarak     int
+	Jarak     float64
 	Biaya     float64
 	Status    string
 }
@@ -67,7 +67,7 @@ type ResponFotoTeknisi struct {
 func CoreToResponseHistoryTeknisi(dataCore entity.Core) ResponHistoryTeknisi {
 	return ResponHistoryTeknisi{
 		Id:        dataCore.Id,
-		UsersID: dataCore.UsersID,
+		UsersID:   dataCore.UsersID,
 		Foto:      ListFotoCoreToResponFotoTeknisi(dataCore.Foto),
 		Deskripsi: dataCore.Deskripsi,
 		Jarak:     dataCore.Jarak,
@@ -76,11 +76,11 @@ func CoreToResponseHistoryTeknisi(dataCore entity.Core) ResponHistoryTeknisi {
 	}
 }
 
-func ListFotoCoreToResponFotoTeknisi(dataCore []entity.FotoCore) []ResponFotoTeknisi{
+func ListFotoCoreToResponFotoTeknisi(dataCore []entity.FotoCore) []ResponFotoTeknisi {
 	var result []ResponFotoTeknisi
 	for _, value := range dataCore {
 		var TeknisiRequestFoto = ResponFotoTeknisi{
-			Id: value.Id,
+			Id:   value.Id,
 			Foto: value.Foto,
 		}
 		result = append(result, TeknisiRequestFoto)
@@ -97,13 +97,11 @@ func CoreToResponseHistoryTeknisiList(dataCore []entity.Core) []ResponHistoryTek
 }
 
 func ResponsesHistoryList(data []entity.Core, role string) interface{} {
-    if role == "user" {
-        return CoreToResponseHistoryUserList(data)
-    }
-    if role == "teknisi" {
-        return CoreToResponseHistoryTeknisiList(data)
-    }
-    return nil
+	if role == "user" {
+		return CoreToResponseHistoryUserList(data)
+	}
+	if role == "teknisi" {
+		return CoreToResponseHistoryTeknisiList(data)
+	}
+	return nil
 }
-
-

@@ -20,8 +20,8 @@ type RequestCreateDetail struct {
 	Profesi      string
 	NIK          int
 	Alamat       string
-	Longitude    string
-	Latitude     string
+	Longitude    float64
+	Latitude     float64
 	No_telp      int
 	Email        string
 	Achievements []entity.AchievementCore

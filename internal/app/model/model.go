@@ -13,8 +13,8 @@ type Users struct {
 	Nama         string `json:"nama" form:"nama"`
 	NIK          int    `json:"nik" form:"nik"`
 	Alamat       string `json:"alamat" form:"alamat"`
-	Longitude    string `json:"longitude" form:"longitude"`
-	Latitude     string `json:"latitude" form:"latitude"`
+	Longitude    float64 `json:"longitude" form:"longitude"`
+	Latitude     float64 `json:"latitude" form:"latitude"`
 	No_telp      int    `json:"no_telp" form:"no_telp"`
 	Email        string `json:"email" form:"email" `
 	Password     string `json:"password" form:"password"`
@@ -39,7 +39,7 @@ type RequestTeknisi struct {
 	TeknisiID           uint   `json:"teknisi_id" form:"teknisi_id" gorm:"foreignKey:ID"`
 	Foto                []Foto `gorm:"foreignKey:RequestTeknisiID"`
 	Deskripsi           string `json:"deskripsi" form:"deskripsi"`
-	Jarak               int    `json:"jarak" form:"jarak"`
+	Jarak               float64   `json:"jarak" form:"jarak"`
 	Biaya               float64
 	Status              string    `gorm:"type:enum('menunggu diproses','konfirmasi biaya','menunggu konfimasi','diproses', 'dibatalkan', 'selesai');default:'menunggu diproses'"`
 	Diproses            bool      `json:"diproses" form:"diproses"`

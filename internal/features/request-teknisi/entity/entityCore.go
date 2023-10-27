@@ -10,7 +10,7 @@ type Core struct {
 	TeknisiID           uint
 	Foto                []FotoCore
 	Deskripsi           string
-	Jarak               int
+	Jarak              float64
 	Biaya               float64
 	Diproses            bool
 	Konfirmasi_biaya    bool

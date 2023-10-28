@@ -1,6 +1,10 @@
 package dto
 
-import "terhandle/internal/features/request-teknisi/entity"
+import ( 
+	"terhandle/internal/features/request-teknisi/entity"
+	// _feedback"terhandle/internal/features/feedback/entity"
+	_feedbackdto"terhandle/internal/features/feedback/dto"
+)
 
 type ResponHistoryUser struct {
 	Id        uint
@@ -10,12 +14,14 @@ type ResponHistoryUser struct {
 	Jarak     float64
 	Biaya     float64
 	Status    string
+	Feedback  []_feedbackdto.ResponseFeedback
 }
 
 type ResponFotoUser struct {
 	Id   int
 	Foto string
 }
+
 
 func CoreToResponseHistory(dataCore entity.Core) ResponHistoryUser {
 	return ResponHistoryUser{
@@ -26,6 +32,7 @@ func CoreToResponseHistory(dataCore entity.Core) ResponHistoryUser {
 		Jarak:     dataCore.Jarak,
 		Biaya:     dataCore.Biaya,
 		Status:    dataCore.Status,
+		Feedback: _feedbackdto.CoreToResponseFeedbackList(dataCore.Feedback),
 	}
 }
 
@@ -57,6 +64,7 @@ type ResponHistoryTeknisi struct {
 	Jarak     float64
 	Biaya     float64
 	Status    string
+	Feedback  []_feedbackdto.ResponseFeedback
 }
 
 type ResponFotoTeknisi struct {
@@ -73,6 +81,7 @@ func CoreToResponseHistoryTeknisi(dataCore entity.Core) ResponHistoryTeknisi {
 		Jarak:     dataCore.Jarak,
 		Biaya:     dataCore.Biaya,
 		Status:    dataCore.Status,
+		Feedback: _feedbackdto.CoreToResponseFeedbackList(dataCore.Feedback),
 	}
 }
 

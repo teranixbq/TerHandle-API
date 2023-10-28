@@ -24,7 +24,6 @@ type RequestCreateDetail struct {
 	Latitude     float64
 	No_telp      int
 	Email        string
-	Achievements []entity.AchievementCore
 }
 
 func RequestCreateDetailToCore(dataRequest RequestCreateDetail) entity.Core {
@@ -36,7 +35,6 @@ func RequestCreateDetailToCore(dataRequest RequestCreateDetail) entity.Core {
 		Latitude:     dataRequest.Latitude,
 		No_telp:      dataRequest.No_telp,
 		Email:        dataRequest.Email,
-		Achievements: dataRequest.Achievements,
 	}
 }
 

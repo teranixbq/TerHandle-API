@@ -119,7 +119,6 @@ func (uc *userHandler) SelectAll(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, helper.FailedResponse("Error"))
 	}
 
-	// Menggunakan CoreToResponseList untuk mengubah data ke format yang diinginkan.
 	respons := dto.CoreToResponseList(users)
 
 	return e.JSON(http.StatusOK, helper.SuccessWithDataResponse("success", respons))

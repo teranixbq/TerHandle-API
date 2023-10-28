@@ -9,8 +9,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"terhandle/internal/features/request-teknisi/dto"
 
+	"terhandle/internal/features/request-teknisi/dto"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
@@ -77,8 +77,8 @@ func UploadFile(fileForm *multipart.FileHeader) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	publicURL := fmt.Sprintf("https://pub-d82858f6b028480cb736d00b2cfdbe32.r2.dev/%s", randomKey)
-	// publiccostume := fmt.Sprintf("https://cloud.kodeteks.com/%s", randomKey)
+	// publicURL := fmt.Sprintf("https://pub-d82858f6b028480cb736d00b2cfdbe32.r2.dev/%s", randomKey)
+	publicURL := fmt.Sprintf("https://terhandle.apicode.my.id/%s", randomKey)
 
 	return publicURL, nil
 }

@@ -3,7 +3,9 @@ package service
 import (
 	// "errors"
 	// "fmt"
+
 	"terhandle/internal/features/request-teknisi/entity"
+
 	"github.com/go-playground/validator/v10"
 )
 
@@ -23,7 +25,7 @@ func (us *userService) Create(payload entity.Core) error {
 	if err != nil {
 		return err
 	}
-
+	
 	err = us.userRepository.Insert(payload)
 	if err != nil {
 		return err
@@ -65,7 +67,7 @@ func (us *userService) ClaimRequest(id_request int, data entity.Core) error {
 	return nil
 }
 
-func (us *userService) KonfirmasiBiaya(id_user,id_request int, data entity.Core) error {
+func (us *userService) KonfirmasiBiaya(id_user, id_request int, data entity.Core) error {
 	if data.Dibatalkan {
 		if err := us.userRepository.UpdateField(id_request, "status", "dibatalkan"); err != nil {
 			return err
@@ -80,7 +82,7 @@ func (us *userService) KonfirmasiBiaya(id_user,id_request int, data entity.Core)
 		}
 	}
 
-	if err := us.userRepository.UpdateStatusClaims(id_user,id_request, data); err != nil {
+	if err := us.userRepository.UpdateStatusClaims(id_user, id_request, data); err != nil {
 		return err
 	}
 

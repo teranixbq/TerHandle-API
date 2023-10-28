@@ -2,12 +2,9 @@ package repository
 
 import (
 	"errors"
-
-
 	"terhandle/internal/app/model"
 	"terhandle/internal/features/request-teknisi/entity"
 	"terhandle/internal/utils/gmaps"
-
 	"gorm.io/gorm"
 )
 
@@ -22,12 +19,12 @@ func New(db *gorm.DB) entity.UserRequestRepositoryInterface {
 }
 
 func (ur *userRequestRepository) Insert(data entity.Core) error {
-	userLatLong,teknisiLatLong  := model.Users{},model.Users{}
-	
+	userLatLong := model.Users{}
 	if err := ur.db.Where("id = ? AND role = 'user'", data.UsersID).First(&userLatLong).Error; err != nil {
 		return err
 	}
 
+	teknisiLatLong := model.Users{}
 	if err := ur.db.Where("id = ? AND role = 'teknisi'", data.TeknisiID).First(&teknisiLatLong).Error; err != nil {
 		return err
 	}
@@ -38,6 +35,7 @@ func (ur *userRequestRepository) Insert(data entity.Core) error {
 	}
 
 	data.Jarak = distance
+
 	user := entity.UserCoreToUserModel(data)
 	if err := ur.db.Create(&user).Error; err != nil {
 		return err
@@ -45,6 +43,7 @@ func (ur *userRequestRepository) Insert(data entity.Core) error {
 
 	return nil
 }
+
 
 func (ur *userRequestRepository) SelectByIdAndRole(userid, teknisiid int, role_user, role_teknisi string) error {
 	var userUser model.Users

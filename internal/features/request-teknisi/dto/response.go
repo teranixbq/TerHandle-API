@@ -3,7 +3,7 @@ package dto
 import "terhandle/internal/features/request-teknisi/entity"
 
 type ResponHistoryUser struct {
-	Id        int
+	Id        uint
 	TeknisiID uint
 	Foto      []ResponFotoUser
 	Deskripsi string
@@ -50,7 +50,7 @@ func CoreToResponseHistoryUserList(dataCore []entity.Core) []ResponHistoryUser {
 }
 
 type ResponHistoryTeknisi struct {
-	Id        int
+	Id        uint
 	UsersID   uint
 	Foto      []ResponFotoTeknisi
 	Deskripsi string

@@ -40,7 +40,9 @@ func R2Config() aws.Config {
 	return cfg
 }
 
-func UploadFile(client *s3.Client, fileForm *multipart.FileHeader) (string, error) {
+func UploadFile(fileForm *multipart.FileHeader) (string, error) {
+
+	client := s3.NewFromConfig(R2Config())
 	godotenv.Load()
 	bucketName := os.Getenv("BUCKET_NAME")
 

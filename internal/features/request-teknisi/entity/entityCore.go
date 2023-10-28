@@ -5,7 +5,7 @@ import (
 )
 
 type Core struct {
-	Id                  int
+	Id                  uint
 	UsersID             uint
 	TeknisiID           uint
 	Foto                []FotoCore

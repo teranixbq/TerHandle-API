@@ -7,7 +7,7 @@ type UserRequestRepositoryInterface interface {
 	SelectByIdAndRole(userid, teknisiid int, role_user, role_teknisi string) error
 	SelectAllById(id int) ([]Core, error)
 	SelectById(userid, id int) ([]Core, error)
-	UpdateStatusClaims(id int,data Core) error
+	UpdateStatusClaims(userid, id int, data Core) error
 	UpdateClaims(id int, data Core) error
 	// Delete(id int, userid int) (row int, err error)
 }
@@ -18,7 +18,7 @@ type UserRequestServiceInterface interface {
 	GetAllById(userid int) ([]Core, error)
 	GetById(userid, id int) ([]Core, error)
 	ClaimRequest(id_request int, data Core) error
-	KonfirmasiBiaya(id_request int, data Core) error
+	KonfirmasiBiaya(id_user,id_request int, data Core) error
 	// GetById(id int, userid int) (Core, error)
 	// Update(id int, userid int, input Core) (data Core, err error)
 	// Delete(id int, userid int) (err error)

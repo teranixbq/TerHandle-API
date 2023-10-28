@@ -3,12 +3,11 @@ package dto
 import "terhandle/internal/features/request-teknisi/entity"
 
 type RequestCreate struct {
-	UsersID   uint `json:"user_id" form:"user_id"`
-	TeknisiID uint `json:"teknisi_id" form:"teknisi_id"`
-
+	UsersID   uint          `json:"user_id" form:"user_id"`
+	TeknisiID uint          `json:"teknisi_id" form:"teknisi_id"`
 	Foto      []RequestFoto `json:"foto" form:"foto"`
 	Deskripsi string        `json:"deskripsi" form:"deskripsi"`
-	Jarak     int           `json:"jarak" form:"jarak"`
+	Jarak     float64       `json:"jarak" form:"jarak"`
 }
 
 type RequestFoto struct {
@@ -39,17 +38,15 @@ func ListRequestFotoToFotoCore(dataCore []RequestFoto) []entity.FotoCore {
 }
 
 type RequestClaims struct {
-	Biaya               float64
-	Diproses            bool
-
+	Biaya    float64
+	Diproses bool
 }
 
 func RequestClaimsToCore(dataRequest RequestClaims) entity.Core {
 	return entity.Core{
 
-		Biaya:               dataRequest.Biaya,
-		Diproses:            dataRequest.Diproses,
-
+		Biaya:    dataRequest.Biaya,
+		Diproses: dataRequest.Diproses,
 	}
 }
 

@@ -37,7 +37,7 @@ func ListFotoCoreToModelFoto(dataCore []FotoCore) []model.Foto {
 
 func UserModelToUserCore(dataModel model.RequestTeknisi) Core {
 	return Core{
-		Id:                  int(dataModel.ID),
+		Id:                  dataModel.ID,
 		UsersID:             dataModel.UsersID,
 		TeknisiID:           dataModel.TeknisiID,
 		Foto:                ListModelFotoToFotoCore(dataModel.Foto),

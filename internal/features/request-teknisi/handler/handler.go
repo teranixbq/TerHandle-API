@@ -1,13 +1,12 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
-	//"strings"
 	"terhandle/internal/features/request-teknisi/dto"
 	"terhandle/internal/features/request-teknisi/entity"
+	"terhandle/internal/utils/cloudflare"
 	"terhandle/internal/utils/helper"
 	"terhandle/internal/utils/jwt"
 
@@ -27,26 +26,34 @@ func (uc *userHandler) Create(e echo.Context) error {
 
 	user_id, role := jwt.ExtractToken(e)
 
-	if user_id == 0 {
+	if user_id == 0 || role == "teknisi" {
 		return e.JSON(http.StatusUnauthorized, helper.FailedResponse("Unauthorized"))
-	}
-
-	if role == "teknisi" {
-		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
 	}
 
 	if err := e.Bind(&input); err != nil {
 		return err
 	}
 
+	fileForm, err := e.MultipartForm()
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, "Failed to receive files")
+	}
+	files := fileForm.File["foto"]
+
+	fotos, err := cloudflare.ProcessUploadFiles(files)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	input.Foto = fotos
 	inputmain := dto.RequestCreateToCore(input)
 
-	err := uc.userService.Create(inputmain)
+	err = uc.userService.Create(inputmain)
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
 	}
 
-	return e.JSON(http.StatusOK, helper.SuccessResponse("Succes Request Teknisi"))
+	return e.JSON(http.StatusOK, helper.SuccessResponse("Success Request Teknisi"))
 }
 
 func (uc *userHandler) GetAllHistoryRequest(e echo.Context) error {
@@ -86,8 +93,7 @@ func (uc *userHandler) GetHistoryRequestById(e echo.Context) error {
 	if idErr != nil || idRequestErr != nil {
 		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Failed Convert"))
 	}
-	fmt.Println(id)
-	fmt.Println(id_request)
+
 	if id != user_id {
 		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
 	}
@@ -101,8 +107,9 @@ func (uc *userHandler) GetHistoryRequestById(e echo.Context) error {
 	return e.JSON(http.StatusOK, helper.SuccessWithDataResponse("succes", respon))
 
 }
+
 func (uc *userHandler) UpdateStatusRequest(e echo.Context) error {
-	
+
 	user_id, role := jwt.ExtractToken(e)
 	if user_id == 0 {
 		return e.JSON(http.StatusUnauthorized, helper.FailedResponse("Unauthorized"))
@@ -139,7 +146,7 @@ func (uc *userHandler) UpdateStatusRequest(e echo.Context) error {
 		}
 
 		inputmodel := dto.RequestUpdateStatusToCore(input)
-		err := uc.userService.KonfirmasiBiaya(id_request, inputmodel)
+		err := uc.userService.KonfirmasiBiaya(id, id_request, inputmodel)
 		if err != nil {
 			return e.JSON(http.StatusInternalServerError, helper.FailedResponse(err.Error()))
 		}

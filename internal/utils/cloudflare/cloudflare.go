@@ -2,12 +2,14 @@ package cloudflare
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"mime/multipart"
 	"os"
 	"path/filepath"
 	"strings"
+	"terhandle/internal/features/request-teknisi/dto"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -80,3 +82,20 @@ func UploadFile(fileForm *multipart.FileHeader) (string, error) {
 
 	return publicURL, nil
 }
+
+
+func ProcessUploadFiles(files []*multipart.FileHeader) ([]dto.RequestFoto, error) {
+    var fotos []dto.RequestFoto
+
+    for _, file := range files {
+        url, err := UploadFile(file)
+        if err != nil {
+            return nil, errors.New("gagal upload file")
+        }
+
+        fotos = append(fotos, dto.RequestFoto{Foto: url})
+    }
+
+    return fotos, nil
+}
+

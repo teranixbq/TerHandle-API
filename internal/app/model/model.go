@@ -59,19 +59,3 @@ type Foto struct {
 	Foto             string `json:"foto" form:"foto"`
 }
 
-type Voucher struct {
-	gorm.Model
-	Name      string
-	Deskripsi string
-	Potongan  float64
-	CreatedAt time.Time `gorm:"type:DATETIME(0)"`
-	UpdatedAt time.Time `gorm:"type:DATETIME(0)"`
-}
-
-// func (u *Users) BeforeCreate(tx *gorm.DB) (err error) {
-//     currentTime := time.Now()
-//     // Ubah format waktu sesuai dengan "dd-MM-yy 15:04:05"
-//     formattedTime := currentTime.Format("02-01-06 15:04:05")
-//     u.CreatedAt = currentTime
-//     return
-// }

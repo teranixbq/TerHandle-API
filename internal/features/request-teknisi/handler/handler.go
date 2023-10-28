@@ -40,16 +40,11 @@ func (uc *userHandler) Create(e echo.Context) error {
 	}
 	files := fileForm.File["foto"]
 
-	fotos := []dto.RequestFoto{}
-	for _, file := range files {
-		url, err := cloudflare.UploadFile(file)
-		if err != nil {
-			return e.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
-		}
-
-		fotos = append(fotos, dto.RequestFoto{Foto: url})
+	fotos, err := cloudflare.ProcessUploadFiles(files)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, err.Error())
 	}
-	
+
 	input.Foto = fotos
 	inputmain := dto.RequestCreateToCore(input)
 

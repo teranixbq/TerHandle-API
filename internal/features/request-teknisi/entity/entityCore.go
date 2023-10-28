@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"terhandle/internal/features/feedback/entity"
 	"time"
 )
 
@@ -10,7 +11,7 @@ type Core struct {
 	TeknisiID           uint
 	Foto                []FotoCore
 	Deskripsi           string
-	Jarak              float64
+	Jarak               float64
 	Biaya               float64
 	Diproses            bool
 	Konfirmasi_biaya    bool
@@ -18,6 +19,7 @@ type Core struct {
 	Dibatalkan          bool
 	Selesai             bool
 	Status              string
+	Feedback            []entity.CoreFeedback
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
 }

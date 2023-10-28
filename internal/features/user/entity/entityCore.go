@@ -2,6 +2,7 @@ package entity
 
 import (
 	"time"
+	_feedback"terhandle/internal/features/feedback/entity"
 )
 
 
@@ -17,18 +18,10 @@ type Core struct {
 	No_telp      int   
 	Email        string
 	Password     string 
-	Achievements []AchievementCore
-	Status       string    
+	Status       string   
+	Feedback     []_feedback.CoreFeedback 
 	CreatedAt    time.Time 
 	UpdatedAt    time.Time 
 }
 
 
-type AchievementCore struct {
-	Id        uint
-	UsersID   uint
-	Nama      string
-	Deskripsi string
-	CreatedAt time.Time 
-	UpdatedAt time.Time 
-}

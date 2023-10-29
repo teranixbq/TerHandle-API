@@ -40,7 +40,7 @@ func (ur *userRequestRepository) Insert(data entity.Core) error {
 			return err 
 		}
 	} else {
-		return errors.New("request Teknisi sudah ada")
+		return errors.New("request teknisi sudah ada")
 	}
 
 	distance, err := gmaps.CalculateDistanceFromGMaps(userLatLong.Latitude, userLatLong.Longitude, teknisiLatLong.Latitude, teknisiLatLong.Longitude)

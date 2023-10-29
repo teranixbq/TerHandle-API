@@ -2,6 +2,7 @@ package entity
 
 import (
 	"terhandle/internal/app/model"
+	_feedbackuser "terhandle/internal/features/user/entity"
 )
 
 func UserCoreToUserModel(dataCore Core) model.RequestTeknisi {
@@ -18,6 +19,7 @@ func UserCoreToUserModel(dataCore Core) model.RequestTeknisi {
 		Dibatalkan:          dataCore.Dibatalkan,
 		Selesai:             dataCore.Selesai,
 		Status:              dataCore.Status,
+		Feedback:            _feedbackuser.ListCoreFeedbackToModelFeedback(dataCore.Feedback),
 		CreatedAt:           dataCore.CreatedAt,
 		UpdatedAt:           dataCore.UpdatedAt,
 	}
@@ -50,6 +52,7 @@ func UserModelToUserCore(dataModel model.RequestTeknisi) Core {
 		Dibatalkan:          dataModel.Dibatalkan,
 		Selesai:             dataModel.Selesai,
 		Status:              dataModel.Status,
+		Feedback:            _feedbackuser.ListModelFeedbackToCoreFeedback(dataModel.Feedback),
 		CreatedAt:           dataModel.CreatedAt,
 		UpdatedAt:           dataModel.UpdatedAt,
 	}

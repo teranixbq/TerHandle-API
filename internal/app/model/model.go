@@ -1,14 +1,18 @@
 package model
 
 import (
+	"crypto/sha256"
+	"encoding/binary"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Users struct {
 	gorm.Model
-	Role      string     `gorm:"type:enum('admin', 'user', 'teknisi');default:'user'"`
+	Role      string `gorm:"type:enum('admin', 'user', 'teknisi');default:'user'"`
+	Rating    float64	
 	Profesi   string     `json:"profesi" form:"profesi"`
 	Nama      string     `json:"nama" form:"nama"`
 	NIK       int        `json:"nik" form:"nik"`
@@ -63,4 +67,16 @@ type Feedback struct {
 	FeedbackUser     Users          `gorm:"foreignKey:UsersID"`
 	TargetUser       Users          `gorm:"foreignKey:TeknisiID"`
 	RequestUser      RequestTeknisi `gorm:"foreignKey:RequestTeknisiID"`
+}
+
+func (u *Users) BeforeCreate(tx *gorm.DB) (err error) {
+	myUUID := uuid.New()
+
+	hash := sha256.Sum256(myUUID[:])
+
+	Iduint := binary.BigEndian.Uint32(hash[:16])
+
+	u.ID = uint(Iduint)
+
+	return nil
 }

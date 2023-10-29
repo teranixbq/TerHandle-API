@@ -2,10 +2,15 @@ package repository
 
 import (
 	"errors"
+	"fmt"
+	//"fmt"
 	"time"
 
 	"terhandle/internal/app/model"
 	"terhandle/internal/features/feedback/entity"
+	"terhandle/internal/utils/helper"
+
+	//"terhandle/internal/utils/helper"
 
 	"gorm.io/gorm"
 )
@@ -20,9 +25,10 @@ func New(db *gorm.DB) entity.FeedbackRepositoryInterface {
 	}
 }
 
-func (ur *FeedbackRepository) Insert(id_request uint, data entity.CoreFeedback) error {
+func (ur *FeedbackRepository) Insert(id_request ,id_teknisi uint, data entity.CoreFeedback) error {
 	userRequest := model.Feedback{}
 	request := model.RequestTeknisi{}
+	users := model.Users{}
 
 	if err := ur.db.Where("id = ? AND selesai = 1", id_request).First(&request).Error; err != nil {
 		return err
@@ -38,9 +44,20 @@ func (ur *FeedbackRepository) Insert(id_request uint, data entity.CoreFeedback) 
 		if err := ur.db.Create(&user).Error; err != nil {
 			return err
 		}
+
+		var allFeedbacks []model.Feedback
+		if err := ur.db.Where("teknisi_id = ?", id_teknisi).Find(&allFeedbacks).Error; err != nil {
+			return err
+		}
+
+		averageRating := helper.GetAverageRating(allFeedbacks)
+		fmt.Println(users.Rating)
+		if err := ur.db.Model(&users).Where("id = ?", id_teknisi).Update("rating", averageRating).Error; err != nil {
+			return errors.New("gagal memperbarui rating user: " + err.Error())
+		}
+
 		return nil
 	}
-
 	return errors.New("feedback sudah ada")
 }
 
@@ -99,3 +116,14 @@ func (ur *FeedbackRepository) UpdateFeedback(id_user, id_feedback, id_request ui
 
 	return nil
 }
+
+// func (ur *FeedbackRepository) GetFeedbacksForUser(id_teknisi uint) ([]entity.CoreFeedback, error) {
+// 	var feedbacks []model.Feedback
+// 	err := ur.db.Where("id = ? ", id_teknisi).Find(&feedbacks).Error
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	feedbacksModel := entity.FeedbackModelToCoreFeedbackList(feedbacks)
+// 	return feedbacksModel, nil
+// }

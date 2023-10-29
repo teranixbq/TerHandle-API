@@ -61,18 +61,18 @@ func (us *userService) Login(email, password string) (entity.Core, string, error
 	return data, token, nil
 }
 
-func (us *userService) CreateUpdateDetail(userid int, data entity.Core) error {
+func (us *userService) CreateUpdateDetail(id_user uint, data entity.Core) error {
 
-	if err := us.userRepository.Update(userid, data); err != nil {
+	if err := us.userRepository.Update(id_user, data); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (us *userService) RequestTeknisiRole(userid int) error {
+func (us *userService) RequestTeknisiRole(id_user uint) error {
 
-	if err := us.userRepository.UpdateField(userid, "role", "teknisi"); err != nil {
+	if err := us.userRepository.UpdateField(id_user, "role", "teknisi"); err != nil {
 		return err
 	}
 
@@ -85,4 +85,21 @@ func (us *userService) GetAll() ([]entity.Core, error) {
 		return nil, err
 	}
 	return users, err
+}
+
+func (us *userService) GetById(id_user uint) ([]entity.Core, error) {
+	users, err := us.userRepository.SelectById(id_user)
+	if err != nil {
+		return nil, err
+	}
+	return users, err
+}
+
+
+func (us *userService) DeleteById(id_user uint) error {
+	err := us.userRepository.DeleteById(id_user)
+	if err != nil {
+		return nil
+	}
+	return nil
 }

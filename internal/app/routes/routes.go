@@ -35,7 +35,9 @@ func UserRoute(e *echo.Echo, db *gorm.DB) {
 	e.POST("/register", userHandler.Create)
 	e.POST("/login", userHandler.Login)
 	e.GET("/", userHandler.SelectAll)
+	e.GET("/:id",userHandler.SelectById)
 	e.PUT("/users/:id", userHandler.CreateDetail, jwt.JWTMiddleware())
+	e.DELETE("/users/:id", userHandler.DeleteById, jwt.JWTMiddleware())
 	e.PUT("/teknisi/register/:id", userHandler.CreateTeknisiRole, jwt.JWTMiddleware())
 
 	e.POST("/request", requestHandler.Create, jwt.JWTMiddleware())

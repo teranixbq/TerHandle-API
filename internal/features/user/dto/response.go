@@ -3,7 +3,7 @@ package dto
 import (
 	"terhandle/internal/features/user/entity"
 	//_feedback"terhandle/internal/features/feedback/entity"
-	_feedbackdto"terhandle/internal/features/feedback/dto"
+	_feedbackdto "terhandle/internal/features/feedback/dto"
 )
 
 type ResponseLogin struct {
@@ -11,24 +11,23 @@ type ResponseLogin struct {
 }
 
 type ResponGetAll struct {
-	Id      int
-	Profesi string
-	Nama    string
-	Alamat  string
-	Email       string
-	Status      string
+	Id       int
+	Profesi  string
+	Nama     string
+	Alamat   string
+	Email    string
+	Status   string
 	Feedback []_feedbackdto.ResponseFeedback
 }
 
-
 func CoreToResponse(dataCore entity.Core) ResponGetAll {
 	return ResponGetAll{
-		Id:      dataCore.Id,
-		Profesi: dataCore.Profesi,
-		Nama:    dataCore.Nama,
-		Alamat:  dataCore.Alamat,
-		Email:       dataCore.Email,
-		Status:      dataCore.Status,
+		Id:       dataCore.Id,
+		Profesi:  dataCore.Profesi,
+		Nama:     dataCore.Nama,
+		Alamat:   dataCore.Alamat,
+		Email:    dataCore.Email,
+		Status:   dataCore.Status,
 		Feedback: _feedbackdto.CoreToResponseFeedbackList(dataCore.Feedback),
 	}
 }
@@ -43,7 +42,7 @@ func CoreToResponse(dataCore entity.Core) ResponGetAll {
 // 			TeknisiID: value.TeknisiID,
 // 			Rating: value.Rating,
 // 			Ulasan: value.Ulasan,
-			
+
 // 		}
 // 		result = append(result, UserFeedback)
 // 	}
@@ -54,6 +53,34 @@ func CoreToResponseList(dataCore []entity.Core) []ResponGetAll {
 	var result []ResponGetAll
 	for _, v := range dataCore {
 		result = append(result, CoreToResponse(v))
+	}
+	return result
+}
+
+type ResponGetById struct {
+	Id      int
+	Profesi string
+	Nama    string
+	Alamat  string
+	Email   string
+	Status  string
+}
+
+func CoreToResponseById(dataCore entity.Core) ResponGetById {
+	return ResponGetById{
+		Id:      dataCore.Id,
+		Profesi: dataCore.Profesi,
+		Nama:    dataCore.Nama,
+		Alamat:  dataCore.Alamat,
+		Email:   dataCore.Email,
+		Status:  dataCore.Status,
+	}
+}
+
+func CoreToResponseByIdList(dataCore []entity.Core) []ResponGetById{
+	var result []ResponGetById
+	for _, v := range dataCore {
+		result = append(result, CoreToResponseById(v))
 	}
 	return result
 }

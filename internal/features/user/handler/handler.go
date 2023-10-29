@@ -81,7 +81,7 @@ func (uc *userHandler) CreateDetail(e echo.Context) error {
 		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Invalid Request"))
 	}
 
-	err = uc.userService.CreateUpdateDetail(user_id, dto.RequestCreateDetailToCore(input))
+	err = uc.userService.CreateUpdateDetail(uint(user_id), dto.RequestCreateDetailToCore(input))
 	if err != nil {
 		return err
 	}
@@ -95,7 +95,7 @@ func (uc *userHandler) CreateTeknisiRole(e echo.Context) error {
 	// if user_id == 0 {
 	// 	return e.JSON(http.StatusUnauthorized, helper.FailedResponse("Unauthorized"))
 	// }
-	fmt.Println(user_id)
+
 	id, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Failed Convert"))
@@ -105,7 +105,7 @@ func (uc *userHandler) CreateTeknisiRole(e echo.Context) error {
 		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
 	}
 
-	err = uc.userService.RequestTeknisiRole(user_id)
+	err = uc.userService.RequestTeknisiRole(uint(user_id))
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, helper.FailedResponse(err.Error()))
 	}
@@ -119,7 +119,51 @@ func (uc *userHandler) SelectAll(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, helper.FailedResponse("Error"))
 	}
 
+	respons := dto.CoreToResponseByIdList(users)
+
+	return e.JSON(http.StatusOK, helper.SuccessWithDataResponse("success", respons))
+}
+
+func (uc *userHandler) SelectById(e echo.Context) error {
+	id, err := strconv.Atoi(e.Param("id"))
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Failed Convert"))
+	}
+
+	if id == 0 {
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Teknisi tidak ada"))
+	}
+
+	users, err := uc.userService.GetById(uint(id))
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, helper.FailedResponse("Error"))
+	}
+
 	respons := dto.CoreToResponseList(users)
 
 	return e.JSON(http.StatusOK, helper.SuccessWithDataResponse("success", respons))
+}
+
+func (uc *userHandler) DeleteById(e echo.Context) error {
+	user_id, _ := jwt.ExtractToken(e)
+
+	id, err := strconv.Atoi(e.Param("id"))
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Failed Convert"))
+	}
+
+	if id == 0 {
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Teknisi tidak ada"))
+	}
+
+	if id != user_id {
+		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
+	}
+
+	err = uc.userService.DeleteById(uint(user_id))
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, helper.FailedResponse("Error"))
+	}
+
+	return e.JSON(http.StatusOK, helper.SuccessResponse("Success Delete Account"))
 }

@@ -63,23 +63,23 @@ func (ur *userRepository) Login(email, password string) (entity.Core, string, er
 	return userCoreData, token, nil
 }
 
-func (ur *userRepository) Update(userid int, data entity.Core) error {
+func (ur *userRepository) Update(id_user uint, data entity.Core) error {
 	user := entity.UserCoreToUserModel(data)
 
-	if err := ur.db.Where("id = ?", userid).Updates(&user).Error; err != nil {
+	if err := ur.db.Where("id = ?", id_user).Updates(&user).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (ur *userRepository) UpdateField(userid int, field string, value string) error {
+func (ur *userRepository) UpdateField(id_user uint, field string, value string) error {
 	var user model.Users
-	if err := ur.db.Where("id = ? AND NIK != 0 AND No_telp != 0 AND Alamat != ''", userid).First(&user).Error; err == nil {
+	if err := ur.db.Where("id = ? AND (NIK != 0 AND No_telp != 0 AND Alamat != '')", id_user).First(&user).Error; err != nil {
 		return errors.New("lengkapi dahulu NIK, No_telp, Alamat")
 	}
 
-	if err := ur.db.Model(&model.Users{}).Where("id = ?", userid).Update(field, value).Error; err != nil {
+	if err := ur.db.Model(&model.Users{}).Where("id = ?", id_user).Update(field, value).Error; err != nil {
 		return err
 	}
 
@@ -88,11 +88,33 @@ func (ur *userRepository) UpdateField(userid int, field string, value string) er
 
 func (ur *userRepository) SelectAll() ([]entity.Core, error) {
 	var usersData []model.Users
-	tx := ur.db.Preload("Feedback").Where("role = ?", "teknisi").Find(&usersData)
-	if tx.Error != nil {
-		return nil, tx.Error
+	err := ur.db.Where("role = ?", "teknisi").Find(&usersData)
+	if err.Error != nil {
+		return nil, err.Error
+	}
+	var usersCoreAll []entity.Core = entity.UserModelToUserCoreList(usersData)
+	return usersCoreAll, nil
+}
+
+func (ur *userRepository) SelectById(id_user uint) ([]entity.Core, error) {
+	var usersData []model.Users
+	err := ur.db.Preload("Feedback").Where("id = ? AND role = ?", id_user, "teknisi").Find(&usersData)
+	if err.Error != nil {
+		return nil, err.Error
 	}
 	var usersCoreAll []entity.Core = entity.UserModelToUserCoreList(usersData)
 
 	return usersCoreAll, nil
+}
+
+func (ur *userRepository) DeleteById(id_user uint) error {
+	var user model.Users
+	if err := ur.db.First(&user, id_user).Error; err != nil {
+		return err
+	}
+
+	if err := ur.db.Delete(&user).Error; err != nil {
+		return err
+	}
+	return nil
 }

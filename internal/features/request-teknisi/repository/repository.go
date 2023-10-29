@@ -5,6 +5,7 @@ import (
 	"terhandle/internal/app/model"
 	"terhandle/internal/features/request-teknisi/entity"
 	"terhandle/internal/utils/gmaps"
+
 	"gorm.io/gorm"
 )
 
@@ -20,13 +21,26 @@ func New(db *gorm.DB) entity.UserRequestRepositoryInterface {
 
 func (ur *userRequestRepository) Insert(data entity.Core) error {
 	userLatLong := model.Users{}
+	teknisiLatLong := model.Users{}
+	checkrequest := model.RequestTeknisi{}
+	if err := ur.db.Where("id = ? AND (role = 'teknisi' AND status ='online')", data.TeknisiID).First(&teknisiLatLong).Error; err != nil {
+		return errors.New("teknisi tidak ada atau offline")
+	}
+
 	if err := ur.db.Where("id = ? AND role = 'user'", data.UsersID).First(&userLatLong).Error; err != nil {
 		return err
 	}
 
-	teknisiLatLong := model.Users{}
 	if err := ur.db.Where("id = ? AND role = 'teknisi'", data.TeknisiID).First(&teknisiLatLong).Error; err != nil {
 		return err
+	}
+
+	if err := ur.db.Where("users_id = ? AND status IN ('menunggu diproses', 'diproses', 'konfirmasi biaya')", data.UsersID).First(&checkrequest).Error; err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err 
+		}
+	} else {
+		return errors.New("request Teknisi sudah ada")
 	}
 
 	distance, err := gmaps.CalculateDistanceFromGMaps(userLatLong.Latitude, userLatLong.Longitude, teknisiLatLong.Latitude, teknisiLatLong.Longitude)
@@ -43,7 +57,6 @@ func (ur *userRequestRepository) Insert(data entity.Core) error {
 
 	return nil
 }
-
 
 func (ur *userRequestRepository) SelectByIdAndRole(userid, teknisiid int, role_user, role_teknisi string) error {
 	var userUser model.Users

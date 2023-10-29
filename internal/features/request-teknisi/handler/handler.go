@@ -34,6 +34,10 @@ func (uc *userHandler) Create(e echo.Context) error {
 		return err
 	}
 
+	if input.UsersID != uint(user_id){
+		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
+	}
+	
 	fileForm, err := e.MultipartForm()
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, "Failed to receive files")

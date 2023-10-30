@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"terhandle/internal/features/feedback/entity"
+	_feedback"terhandle/internal/features/feedback/entity"
 	"time"
 )
 
@@ -19,7 +19,7 @@ type Core struct {
 	Dibatalkan          bool
 	Selesai             bool
 	Status              string
-	Feedback            []entity.CoreFeedback
+	Feedback            []_feedback.CoreFeedback
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
 }
@@ -29,30 +29,3 @@ type FotoCore struct {
 	RequestTeknisiID uint
 	Foto             string
 }
-
-// type Core struct {
-// 	Id          int
-// 	Role         string
-// 	Profesi      string
-// 	Nama         string
-// 	NIK          int
-// 	Alamat       string
-// 	Longitude    string
-// 	Latitude     string
-// 	No_telp      int
-// 	Email        string
-// 	Password     string
-// 	Achievements []AchievementCore
-// 	Status       string
-// 	CreatedAt    time.Time
-// 	UpdatedAt    time.Time
-// }
-
-// type AchievementCore struct {
-// 	Id        uint
-// 	UsersID   uint
-// 	Nama      string
-// 	Deskripsi string
-// 	CreatedAt time.Time
-// 	UpdatedAt time.Time
-// }

@@ -1,8 +1,6 @@
 package service
 
 import (
-	// "errors"
-	// "fmt"
 
 	"terhandle/internal/features/request-teknisi/entity"
 
@@ -45,12 +43,8 @@ func (us *userService) CreateUpdateDetail(userid int, data entity.Core) error {
 
 func (us *userService) ClaimRequest(id_request int, data entity.Core) error {
 
-	if data.Menunggu_konfirmasi {
-
-		if err := us.userRepository.UpdateField(id_request, "status", "menunggu konfirmasi"); err != nil {
-			return err
-		}
-	} else if data.Dibatalkan {
+	
+	if data.Dibatalkan {
 		if err := us.userRepository.UpdateField(id_request, "status", "dibatalkan"); err != nil {
 			return err
 		}

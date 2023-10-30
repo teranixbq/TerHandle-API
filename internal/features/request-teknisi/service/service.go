@@ -1,7 +1,6 @@
 package service
 
 import (
-
 	"terhandle/internal/features/request-teknisi/entity"
 
 	"github.com/go-playground/validator/v10"
@@ -23,7 +22,7 @@ func (us *userService) Create(payload entity.Core) error {
 	if err != nil {
 		return err
 	}
-	
+
 	err = us.userRepository.Insert(payload)
 	if err != nil {
 		return err
@@ -35,48 +34,6 @@ func (us *userService) Create(payload entity.Core) error {
 func (us *userService) CreateUpdateDetail(userid int, data entity.Core) error {
 
 	if err := us.userRepository.Update(userid, data); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (us *userService) ClaimRequest(id_request int, data entity.Core) error {
-
-	
-	if data.Dibatalkan {
-		if err := us.userRepository.UpdateField(id_request, "status", "dibatalkan"); err != nil {
-			return err
-		}
-	}
-
-	if err := us.userRepository.UpdateClaims(id_request, data); err != nil {
-		return err
-	}
-
-	if err := us.userRepository.UpdateField(id_request, "status", "konfirmasi biaya"); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (us *userService) KonfirmasiBiaya(id_user, id_request int, data entity.Core) error {
-	if data.Dibatalkan {
-		if err := us.userRepository.UpdateField(id_request, "status", "dibatalkan"); err != nil {
-			return err
-		}
-	} else if data.Selesai {
-		if err := us.userRepository.UpdateField(id_request, "status", "selesai"); err != nil {
-			return err
-		}
-	} else {
-		if err := us.userRepository.UpdateField(id_request, "status", "diproses"); err != nil {
-			return err
-		}
-	}
-
-	if err := us.userRepository.UpdateStatusClaims(id_user, id_request, data); err != nil {
 		return err
 	}
 
@@ -97,4 +54,54 @@ func (us *userService) GetById(userid, id int) ([]entity.Core, error) {
 		return nil, err
 	}
 	return result, nil
+}
+
+func (us *userService) ClaimRequest(id_request int, data entity.Core) error {
+
+	if err := us.userRepository.UpdateClaims(id_request, data); err != nil {
+		return err
+	}
+
+	if err := us.userRepository.UpdateField(id_request, "status", "konfirmasi biaya"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (us *userService) KonfirmasiBiaya(id_user, id_request int, data entity.Core) error {
+
+	if err := us.userRepository.UpdateStatusKonfirmBiaya(id_user, id_request, data); err != nil {
+		return err
+	}
+
+	if err := us.userRepository.UpdateField(id_request, "status", "diproses"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (us *userService) BatalkanRequest(id_user, id_request int, data entity.Core) error {
+
+	if err := us.userRepository.UpdateStatusBatal(id_user, id_request, data); err != nil {
+		return err
+	}
+	if err := us.userRepository.UpdateField(id_request, "status", "dibatalkan"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (us *userService) SelesaikanRequest(id_user, id_request int, data entity.Core) error {
+
+	if err := us.userRepository.UpdateStatusSelesai(id_user, id_request, data); err != nil {
+		return err
+	}
+	if err := us.userRepository.UpdateField(id_request, "status", "selesai"); err != nil {
+		return err
+	}
+
+	return nil
 }

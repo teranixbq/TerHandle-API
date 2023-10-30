@@ -38,7 +38,7 @@ func (ur *userRequestRepository) Insert(data entity.Core) error {
 
 	if err := ur.db.Where("users_id = ? AND status IN ('menunggu diproses', 'diproses', 'konfirmasi biaya')", data.UsersID).First(&checkrequest).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return err 
+			return err
 		}
 	} else {
 		return errors.New("request teknisi sudah ada")
@@ -121,40 +121,41 @@ func (ur *userRequestRepository) UpdateField(userid int, field string, value str
 }
 
 func (ur *userRequestRepository) UpdateClaims(id int, data entity.Core) error {
-    var biaya model.Transport
-    var jarak model.RequestTeknisi
-    request := entity.UserCoreToUserModel(data)
+	var biaya model.Transport
+	var jarak model.RequestTeknisi
+	request := entity.UserCoreToUserModel(data)
 
-    if err := ur.db.First(&request, id).Error; err != nil {
-        return err
-    }
+	if err := ur.db.First(&request, id).Error; err != nil {
+		return err
+	}
 
-    if err := ur.db.Where("id = 1").First(&biaya).Error; err != nil {
-        return err
-    }
-    if err := ur.db.Where("jarak = ?", request.Jarak).First(&jarak).Error; err != nil {
-        return err
-    }
+	if err := ur.db.Where("id = 1").First(&biaya).Error; err != nil {
+		return err
+	}
+	if err := ur.db.Where("jarak = ?", request.Jarak).First(&jarak).Error; err != nil {
+		return err
+	}
 
-    calculate := jarak.Jarak * biaya.Biaya
-    totalBiaya := calculate + data.Biaya
+	calculate := jarak.Jarak * biaya.Biaya
+	totalBiaya := calculate + data.Biaya
 
-    request.Biaya = totalBiaya
-    request.Diproses = data.Diproses
- 
-    request.Dibatalkan = data.Dibatalkan
+	if data.Diproses && !request.Diproses  && !request.Dibatalkan{
+		request.Diproses = true
 
-    if err := ur.db.Save(&request).Error; err != nil {
-        return err
-    }
+		if err := ur.db.Model(&request).Updates(model.RequestTeknisi{Diproses: true,Biaya: totalBiaya}).Error; err != nil {
+			return err
+		}
 
-    return nil
+	} else {
+		return errors.New("tidak bisa merubah Konfirmasi_biaya menjadi false atau melakukan perubahan lebih dari sekali")
+	}
+	return nil
 }
 
-
-func (ur *userRequestRepository) UpdateStatusClaims(id_user, id_request int, data entity.Core) error {
+func (ur *userRequestRepository) UpdateStatusKonfirmBiaya(id_user, id_request int, data entity.Core) error {
 	request := entity.UserCoreToUserModel(data)
 	result := model.RequestTeknisi{}
+
 	if err := ur.db.Where("users_id = ? AND id = ?", id_user, id_request).First(&result).Error; err != nil {
 		return errors.New("data tidak ada")
 	}
@@ -163,14 +164,67 @@ func (ur *userRequestRepository) UpdateStatusClaims(id_user, id_request int, dat
 		return err
 	}
 
-	request.Diproses = data.Diproses
-	request.Konfirmasi_biaya = data.Konfirmasi_biaya
-	request.Dibatalkan = data.Dibatalkan
-	request.Selesai = data.Selesai
+	if data.Konfirmasi_biaya && !request.Konfirmasi_biaya && !request.Dibatalkan {
+		request.Konfirmasi_biaya = true
 
-	if err := ur.db.Save(&request).Error; err != nil {
-		return err
+		if err := ur.db.Model(&request).Updates(model.RequestTeknisi{Konfirmasi_biaya: true}).Error; err != nil {
+			return err
+		}
+
+	} else {
+		return errors.New("tidak dapat melakukan konfirmasi biaya")
 	}
 
 	return nil
 }
+
+func (ur *userRequestRepository) UpdateStatusBatal(id_user, id_request int, data entity.Core) error {
+    request := entity.UserCoreToUserModel(data)
+    result := model.RequestTeknisi{}
+
+    if err := ur.db.Where("users_id = ? AND id = ?", id_user, id_request).First(&result).Error; err != nil {
+        return errors.New("data tidak ada")
+    }
+
+    if err := ur.db.First(&request, id_request).Error; err != nil {
+        return err
+    }
+
+    if data.Dibatalkan && !request.Diproses && !request.Konfirmasi_biaya {
+        request.Dibatalkan = true
+
+        if err := ur.db.Model(&request).Updates(model.RequestTeknisi{Dibatalkan: true}).Error; err != nil {
+            return err
+        }
+    } else {
+        return errors.New("tidak dapat melakukan pembatalan")
+    }
+
+    return nil
+}
+
+func (ur *userRequestRepository) UpdateStatusSelesai(id_user, id_request int, data entity.Core) error {
+    request := entity.UserCoreToUserModel(data)
+    result := model.RequestTeknisi{}
+
+    if err := ur.db.Where("users_id = ? AND id = ?", id_user, id_request).First(&result).Error; err != nil {
+        return errors.New("data tidak ada")
+    }
+
+    if err := ur.db.First(&request, id_request).Error; err != nil {
+        return err
+    }
+
+    if data.Selesai && !request.Selesai && request.Diproses && !request.Dibatalkan{
+        request.Selesai = true
+
+        if err := ur.db.Model(&request).Updates(model.RequestTeknisi{Selesai: true}).Error; err != nil {
+            return err
+        }
+    } else {
+        return errors.New("tidak dapat melakukan konfirmasi selesai")
+    }
+
+    return nil
+}
+

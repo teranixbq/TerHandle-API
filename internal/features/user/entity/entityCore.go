@@ -8,6 +8,7 @@ import (
 type Core struct {
 	Id        int
 	Role      string
+	Rating    float64
 	Profesi   string
 	Nama      string
 	NIK       int

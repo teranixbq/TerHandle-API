@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-
 	"terhandle/internal/app/model"
 	"terhandle/internal/features/user/entity"
 	"terhandle/internal/utils/helper"
@@ -67,7 +66,7 @@ func (ur *userRepository) Update(id_user uint, data entity.Core) error {
 	user := entity.UserCoreToUserModel(data)
 
 	if err := ur.db.Where("id = ?", id_user).Updates(&user).Error; err != nil {
-		return err
+		return errors.New("profesi tidak ada")
 	}
 
 	return nil
@@ -96,7 +95,18 @@ func (ur *userRepository) SelectAll() ([]entity.Core, error) {
 	return usersCoreAll, nil
 }
 
-func (ur *userRepository) SelectById(id_user uint) ([]entity.Core, error) {
+func (ur *userRepository) SelectUserById(id_user uint, role string) (entity.Core, error) {
+	var usersData model.Users
+	err := ur.db.Where("id = ? AND role = ?", id_user, role).Find(&usersData)
+	if err.Error != nil {
+		return entity.Core{}, err.Error
+	}
+	var usersCoreAll entity.Core = entity.UserModelToUserCore(usersData)
+
+	return usersCoreAll, nil
+}
+
+func (ur *userRepository) SelectByIdWithFeedback(id_user uint) ([]entity.Core, error) {
 	var usersData []model.Users
 	err := ur.db.Preload("Feedback").Where("id = ? AND role = ?", id_user, "teknisi").Find(&usersData)
 	if err.Error != nil {

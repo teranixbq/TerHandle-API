@@ -1,9 +1,8 @@
 package dto
 
 import (
-	"terhandle/internal/features/user/entity"
-	//_feedback"terhandle/internal/features/feedback/entity"
 	_feedbackdto "terhandle/internal/features/feedback/dto"
+	"terhandle/internal/features/user/entity"
 )
 
 type ResponseLogin struct {
@@ -11,18 +10,20 @@ type ResponseLogin struct {
 }
 
 type ResponGetAll struct {
-	Id       int
-	Profesi  string
-	Nama     string
-	Alamat   string
-	Email    string
-	Status   string
-	Feedback []_feedbackdto.ResponseFeedback
+	Id       int                             `json:"id"`
+	Rating   float64                         `json:"rating"`
+	Profesi  string                          `json:"profesi"`
+	Nama     string                          `json:"nama"`
+	Alamat   string                          `json:"alamat"`
+	Email    string                          `json:"email"`
+	Status   string                          `json:"status"`
+	Feedback []_feedbackdto.ResponseFeedback `json:"feedback"`
 }
 
 func CoreToResponse(dataCore entity.Core) ResponGetAll {
 	return ResponGetAll{
 		Id:       dataCore.Id,
+		Rating:   dataCore.Rating,
 		Profesi:  dataCore.Profesi,
 		Nama:     dataCore.Nama,
 		Alamat:   dataCore.Alamat,
@@ -31,23 +32,6 @@ func CoreToResponse(dataCore entity.Core) ResponGetAll {
 		Feedback: _feedbackdto.CoreToResponseFeedbackList(dataCore.Feedback),
 	}
 }
-
-// func ListFeedbackCoreToResponList(dataCore []_feedback.CoreFeedback) []_feedbackdto.ResponseFeedback {
-// 	var result []_feedbackdto.ResponseFeedback
-// 	for _, value := range dataCore {
-// 		var UserFeedback = _feedbackdto.ResponseFeedback{
-
-// 			RequestTeknisiID: value.RequestTeknisiID,
-// 			UsersID: value.UsersID,
-// 			TeknisiID: value.TeknisiID,
-// 			Rating: value.Rating,
-// 			Ulasan: value.Ulasan,
-
-// 		}
-// 		result = append(result, UserFeedback)
-// 	}
-// 	return result
-// }
 
 func CoreToResponseList(dataCore []entity.Core) []ResponGetAll {
 	var result []ResponGetAll
@@ -58,17 +42,19 @@ func CoreToResponseList(dataCore []entity.Core) []ResponGetAll {
 }
 
 type ResponGetById struct {
-	Id      int
-	Profesi string
-	Nama    string
-	Alamat  string
-	Email   string
-	Status  string
+	Id      int     `json:"id"`
+	Rating  float64 `json:"rating"`
+	Profesi string  `json:"profesi"`
+	Nama    string  `json:"nama"`
+	Alamat  string  `json:"alamat"`
+	Email   string  `json:"email"`
+	Status  string  `json:"status"`
 }
 
 func CoreToResponseById(dataCore entity.Core) ResponGetById {
 	return ResponGetById{
 		Id:      dataCore.Id,
+		Rating:  dataCore.Rating,
 		Profesi: dataCore.Profesi,
 		Nama:    dataCore.Nama,
 		Alamat:  dataCore.Alamat,
@@ -77,10 +63,75 @@ func CoreToResponseById(dataCore entity.Core) ResponGetById {
 	}
 }
 
-func CoreToResponseByIdList(dataCore []entity.Core) []ResponGetById{
+func CoreToResponseByIdList(dataCore []entity.Core) []ResponGetById {
 	var result []ResponGetById
 	for _, v := range dataCore {
 		result = append(result, CoreToResponseById(v))
 	}
 	return result
+}
+
+// Response Profile
+type ResponProfileUser struct {
+	Id        uint    `json:"id"`
+	Nama      string  `json:"nama"`
+	NIK       int     `json:"nik"`
+	Alamat    string  `json:"alamat"`
+	Longitude float64 `json:"longitude"`
+	Latitude  float64 `json:"latitude"`
+	No_telp   int     `json:"no_telp"`
+	Email     string  `json:"email"`
+}
+
+func CoreToResponseProfileUser(dataCore entity.Core) ResponProfileUser {
+	return ResponProfileUser{
+		Id:        uint(dataCore.Id),
+		Nama:      dataCore.Nama,
+		NIK:       dataCore.NIK,
+		Alamat:    dataCore.Alamat,
+		Longitude: dataCore.Longitude,
+		Latitude:  dataCore.Latitude,
+		No_telp:   dataCore.No_telp,
+		Email:     dataCore.Email,
+	}
+}
+
+type ResponProfileTeknisi struct {
+	Id        uint    `json:"id"`
+	Rating    float64 `json:"rating"`
+	Profesi   string  `json:"profesi"`
+	Nama      string  `json:"nama"`
+	NIK       int     `json:"nik"`
+	Alamat    string  `json:"alamat"`
+	Longitude float64 `json:"longitude"`
+	Latitude  float64 `json:"latitude"`
+	No_telp   int     `json:"no_telp"`
+	Email     string  `json:"email"`
+	Status    string  `json:"status"`
+}
+
+func CoreToResponseProfileTeknisi(dataCore entity.Core) ResponProfileTeknisi {
+	return ResponProfileTeknisi{
+		Id:        uint(dataCore.Id),
+		Rating:    dataCore.Rating,
+		Profesi:   dataCore.Profesi,
+		Nama:      dataCore.Nama,
+		NIK:       dataCore.NIK,
+		Alamat:    dataCore.Alamat,
+		Longitude: dataCore.Longitude,
+		Latitude:  dataCore.Latitude,
+		No_telp:   dataCore.No_telp,
+		Email:     dataCore.Email,
+		Status:    dataCore.Status,
+	}
+}
+
+func ResponsesProfileList(data entity.Core, role string) interface{} {
+	if role == "user" {
+		return CoreToResponseProfileUser(data)
+	}
+	if role == "teknisi" {
+		return CoreToResponseProfileTeknisi(data)
+	}
+	return nil
 }

@@ -21,6 +21,10 @@ import (
 	adminRepository "terhandle/internal/features/admin/repository"
 	adminService "terhandle/internal/features/admin/service"
 
+	// ChatHandle
+	chatHandler "terhandle/internal/features/chathandle/handler"
+	chatService "terhandle/internal/features/chathandle/service"
+
 	"terhandle/internal/utils/jwt"
 
 	"github.com/labstack/echo/v4"
@@ -48,14 +52,20 @@ func InitRoute(e *echo.Echo, db *gorm.DB) {
 	adminService := adminService.NewUserService(adminRepository)
 	adminHandler := adminHandler.NewUserHandler(adminService)
 
+	// ChatHandle
+	chatService := chatService.NewServiceHandle()
+	chatHandler := chatHandler.NewChatHandleHandler(chatService)
+
 	e.POST("/register", userHandler.Create)
 	e.POST("/login", userHandler.Login)
 	e.GET("/", userHandler.GetAll)
 	e.GET("/:id", userHandler.GetByIdWithFeedback)
 	e.PUT("/teknisi/register/:id", userHandler.CreateTeknisiRole, jwt.JWTMiddleware())
+	// chathandle
+	e.POST("/chathandle",chatHandler.GetChatSolution)
 
 	user := e.Group("/profile", jwt.JWTMiddleware())
-	user.GET("",userHandler.GetById)
+	user.GET("", userHandler.GetById)
 	user.PUT("/:id", userHandler.CreateDetail)
 	user.DELETE("/:id", userHandler.DeleteById)
 
@@ -73,10 +83,12 @@ func InitRoute(e *echo.Echo, db *gorm.DB) {
 	feedback.PUT("/:id/:id_feedback", feedbackHandler.UpdateDataFeedback)
 
 	admin := e.Group("/", jwt.JWTMiddleware())
-	admin.POST("profesi",adminHandler.Create)
-	admin.GET("profesi",adminHandler.GetAllProfesi)
-	admin.PUT("profesi/:id_profesi",adminHandler.UpdateDataProfesi)
-	admin.DELETE("profesi/:id_profesi",adminHandler.DeleteDataProfesi)
-	admin.POST("transport",adminHandler.CreateBiaya)
+	admin.POST("profesi", adminHandler.Create)
+	admin.GET("profesi", adminHandler.GetAllProfesi)
+	admin.PUT("profesi/:id_profesi", adminHandler.UpdateDataProfesi)
+	admin.DELETE("profesi/:id_profesi", adminHandler.DeleteDataProfesi)
+	admin.POST("transport", adminHandler.CreateBiaya)
+	admin.PUT("transport/:id", adminHandler.UpdateBiaya)
+
 
 }

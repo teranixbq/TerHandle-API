@@ -29,10 +29,18 @@ func FeedbackModelToCoreFeedback(dataModel model.Feedback) CoreFeedback {
 }
 
 
-func UserModelToUserCoreList(dataModel []model.Feedback) []CoreFeedback {
+func FeedbackModelToCoreFeedbackList(dataModel []model.Feedback) []CoreFeedback {
 	var ListFeedbackModel []CoreFeedback
 	for _, v := range dataModel {
 		ListFeedbackModel = append(ListFeedbackModel, FeedbackModelToCoreFeedback(v))
+	}
+	return ListFeedbackModel
+}
+
+func FeedbackCoreToCoreFeedbackList(dataModel []CoreFeedback) []model.Feedback {
+	var ListFeedbackModel []model.Feedback
+	for _, v := range dataModel {
+		ListFeedbackModel = append(ListFeedbackModel, CoreFeedbackToModelFeedback(v))
 	}
 	return ListFeedbackModel
 }

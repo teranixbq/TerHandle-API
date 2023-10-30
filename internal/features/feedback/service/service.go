@@ -29,7 +29,7 @@ func (fr *feedbackService) Create(payload entity.CoreFeedback) error {
 		return err
 	}
 
-	err = fr.feedbackRepository.Insert(payload.RequestTeknisiID, payload)
+	err = fr.feedbackRepository.Insert(payload.RequestTeknisiID,payload.TeknisiID,payload)
 	if err != nil {
 		return err
 	}

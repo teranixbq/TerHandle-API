@@ -83,12 +83,11 @@ func InitRoute(e *echo.Echo, db *gorm.DB) {
 	feedback.PUT("/:id/:id_feedback", feedbackHandler.UpdateDataFeedback)
 
 	admin := e.Group("/", jwt.JWTMiddleware())
-	admin.POST("profesi", adminHandler.Create)
-	admin.GET("profesi", adminHandler.GetAllProfesi)
-	admin.PUT("profesi/:id_profesi", adminHandler.UpdateDataProfesi)
-	admin.DELETE("profesi/:id_profesi", adminHandler.DeleteDataProfesi)
-	admin.POST("transport", adminHandler.CreateBiaya)
-	admin.PUT("transport/:id", adminHandler.UpdateBiaya)
-
+	admin.POST("profesi",adminHandler.Create)
+	admin.GET("profesi",adminHandler.GetAllProfesi)
+	admin.PUT("profesi/:id_profesi",adminHandler.UpdateDataProfesi)
+	admin.DELETE("profesi/:id_profesi",adminHandler.DeleteDataProfesi)
+	admin.POST("transport",adminHandler.CreateBiaya)
+	admin.PUT("transport/:id",adminHandler.UpdateBiaya)
 
 }

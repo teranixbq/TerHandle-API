@@ -23,6 +23,7 @@ func (ur *userRequestRepository) Insert(data entity.Core) error {
 	userLatLong := model.Users{}
 	teknisiLatLong := model.Users{}
 	checkrequest := model.RequestTeknisi{}
+
 	if err := ur.db.Where("id = ? AND (role = 'teknisi' AND status ='online')", data.TeknisiID).First(&teknisiLatLong).Error; err != nil {
 		return errors.New("teknisi tidak ada atau offline")
 	}
@@ -120,22 +121,36 @@ func (ur *userRequestRepository) UpdateField(userid int, field string, value str
 }
 
 func (ur *userRequestRepository) UpdateClaims(id int, data entity.Core) error {
-	request := entity.UserCoreToUserModel(data)
-	if err := ur.db.First(&request, id).Error; err != nil {
-		return err
-	}
+    var biaya model.Transport
+    var jarak model.RequestTeknisi
+    request := entity.UserCoreToUserModel(data)
 
-	request.Biaya = data.Biaya
-	request.Diproses = data.Diproses
-	request.Dibatalkan = data.Dibatalkan
-	request.Menunggu_konfirmasi = data.Menunggu_konfirmasi
+    if err := ur.db.First(&request, id).Error; err != nil {
+        return err
+    }
 
-	if err := ur.db.Save(&request).Error; err != nil {
-		return err
-	}
+    if err := ur.db.Where("id = 1").First(&biaya).Error; err != nil {
+        return err
+    }
+    if err := ur.db.Where("jarak = ?", request.Jarak).First(&jarak).Error; err != nil {
+        return err
+    }
 
-	return nil
+    calculate := jarak.Jarak * biaya.Biaya
+    totalBiaya := calculate + data.Biaya
+
+    request.Biaya = totalBiaya
+    request.Diproses = data.Diproses
+ 
+    request.Dibatalkan = data.Dibatalkan
+
+    if err := ur.db.Save(&request).Error; err != nil {
+        return err
+    }
+
+    return nil
 }
+
 
 func (ur *userRequestRepository) UpdateStatusClaims(id_user, id_request int, data entity.Core) error {
 	request := entity.UserCoreToUserModel(data)

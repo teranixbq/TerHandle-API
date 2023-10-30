@@ -51,19 +51,17 @@ func RequestClaimsToCore(dataRequest RequestClaims) entity.Core {
 }
 
 type RequestUpdateStatus struct {
-	Diproses            bool
-	Konfirmasi_biaya    bool
-	Menunggu_konfirmasi bool
-	Dibatalkan          bool
-	Selesai             bool
+	Diproses         bool
+	Konfirmasi_biaya bool
+	Dibatalkan       bool
+	Selesai          bool
 }
 
 func RequestUpdateStatusToCore(dataRequest RequestUpdateStatus) entity.Core {
 	return entity.Core{
-		Diproses:            dataRequest.Diproses,
-		Konfirmasi_biaya:    dataRequest.Konfirmasi_biaya,
-		Menunggu_konfirmasi: dataRequest.Dibatalkan,
-		Dibatalkan:          dataRequest.Dibatalkan,
-		Selesai:             dataRequest.Selesai,
+		Diproses:         dataRequest.Diproses,
+		Konfirmasi_biaya: dataRequest.Konfirmasi_biaya,
+		Dibatalkan:       dataRequest.Dibatalkan,
+		Selesai:          dataRequest.Selesai,
 	}
 }

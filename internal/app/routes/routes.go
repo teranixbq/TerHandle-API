@@ -63,7 +63,10 @@ func InitRoute(e *echo.Echo, db *gorm.DB) {
 	request.POST("", requestHandler.Create)
 	request.GET("/history/:id", requestHandler.GetAllHistoryRequest)
 	request.GET("/history/:id/:id_request", requestHandler.GetHistoryRequestById)
-	request.PUT("/:id/:id_request", requestHandler.UpdateStatusRequest)
+	request.PATCH("/:id/:id_request/klaim", requestHandler.UpdateStatusClaim)
+	request.PATCH("/:id/:id_request/konfirm", requestHandler.UpdateStatusKonfirm)
+	request.PATCH("/:id/:id_request/batal", requestHandler.UpdateStatusBatal)
+	request.PATCH("/:id/:id_request/selesai", requestHandler.UpdateStatusSelesai)
 
 	feedback := e.Group("/feedback", jwt.JWTMiddleware())
 	feedback.POST("/:id", feedbackHandler.Create)

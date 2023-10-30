@@ -51,8 +51,17 @@ func (Ad *AdminService) Delete(id_profesi uint) error {
 	return nil
 }
 
-func (Ad *AdminService) InsertBiaya(payload entity.CoreTransport) error{
+func (Ad *AdminService) InsertBiaya(payload entity.CoreTransport) error {
 	err := Ad.AdminRepository.InsertBiaya(payload)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+func (Ad *AdminService) UpdateBiaya(id uint, payload entity.CoreTransport) error {
+	err := Ad.AdminRepository.UpdateBiaya(id, payload)
 	if err != nil {
 		return err
 	}

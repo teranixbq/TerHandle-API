@@ -19,14 +19,14 @@ func New(db *gorm.DB) entity.AdminRepositoryInterface {
 }
 
 func (ur *AdminRepository) Insert(data entity.CoreProfesi) error {
-    dataProfesi := model.Profesi {}
+	dataProfesi := model.Profesi{}
 
-    if err := ur.db.Where("nama_profesi = ?", data.NamaProfesi).First(&dataProfesi).Error; err == nil {
-        return errors.New("profesi sudah ada")
+	if err := ur.db.Where("nama_profesi = ?", data.NamaProfesi).First(&dataProfesi).Error; err == nil {
+		return errors.New("profesi sudah ada")
 
-    } else if !errors.Is(err, gorm.ErrRecordNotFound) {
-        return err
-    }
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
 
 	profesi := entity.CoreProfesiToModelProfesi(data)
 	if err := ur.db.Create(&profesi).Error; err != nil {
@@ -49,23 +49,22 @@ func (ur *AdminRepository) SelectAll() ([]entity.CoreProfesi, error) {
 }
 
 func (ur *AdminRepository) Update(id_profesi uint, data entity.CoreProfesi) error {
-    profesi := model.Profesi{}
+	profesi := model.Profesi{}
 
-    if err := ur.db.First(&profesi, id_profesi).Error; err != nil {
-        return err
-    }
+	if err := ur.db.First(&profesi, id_profesi).Error; err != nil {
+		return err
+	}
 
-    profesi.NamaProfesi = data.NamaProfesi
-    if err := ur.db.Save(&profesi).Error; err != nil {
-        return err
-    }
+	profesi.NamaProfesi = data.NamaProfesi
+	if err := ur.db.Save(&profesi).Error; err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
 
-
 func (ur *AdminRepository) Delete(id_profesi uint) error {
-	profesi := model.Profesi {}
+	profesi := model.Profesi{}
 
 	result := ur.db.Where("id = ?", id_profesi).Delete(&profesi)
 	if result.Error != nil {
@@ -79,23 +78,39 @@ func (ur *AdminRepository) Delete(id_profesi uint) error {
 	return nil
 }
 
-
 func (ur *AdminRepository) InsertBiaya(data entity.CoreTransport) error {
-    var count int64
-    if err := ur.db.Model(&model.Transport{}).Where("id = ?", 1).Count(&count).Error; err != nil {
-        return err
-    }
+	var count int64
+	if err := ur.db.Model(&model.Transport{}).Where("id = ?", 1).Count(&count).Error; err != nil {
+		return err
+	}
 
-    if count > 1 {
-        return errors.New("data melebihi")
-    } else if count == 1 {
-        return errors.New("data sudah ada")
-    }
+	if count > 1 {
+		return errors.New("data melebihi")
+	} else if count == 1 {
+		return errors.New("data sudah ada")
+	}
 
-    biaya := entity.CoreTransportToModelTransport(data)
-    if err := ur.db.Create(&biaya).Error; err != nil {
-        return err
-    }
+	biaya := entity.CoreTransportToModelTransport(data)
+	if err := ur.db.Create(&biaya).Error; err != nil {
+		return err
+	}
 
-    return nil
+	return nil
+}
+
+func (ur *AdminRepository) UpdateBiaya(id uint, data entity.CoreTransport) error {
+
+	transport := model.Transport{}
+
+	if err := ur.db.First(&transport, id).Error; err != nil {
+		return err
+	}
+
+	transport.Biaya = data.Biaya
+
+	if err := ur.db.Save(&transport).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

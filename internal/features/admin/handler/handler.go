@@ -59,11 +59,10 @@ func (uc *AdminHandler) UpdateDataProfesi(e echo.Context) error {
 		return e.JSON(http.StatusUnauthorized, helper.FailedResponse("Acces Denied"))
 	}
 
-	id_profesi,err := strconv.Atoi(e.Param("id_profesi"))
+	id_profesi, err := strconv.Atoi(e.Param("id_profesi"))
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Failed Convert"))
 	}
-
 
 	if err := e.Bind(&input); err != nil {
 		return err
@@ -71,7 +70,7 @@ func (uc *AdminHandler) UpdateDataProfesi(e echo.Context) error {
 
 	inputModel := dto.RequestCreateToCore(input)
 
-	err = uc.AdminService.Update(uint(id_profesi),inputModel)
+	err = uc.AdminService.Update(uint(id_profesi), inputModel)
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
 	}
@@ -85,7 +84,7 @@ func (uc *AdminHandler) DeleteDataProfesi(e echo.Context) error {
 		return e.JSON(http.StatusUnauthorized, helper.FailedResponse("Acces Denied"))
 	}
 
-	id_profesi,err := strconv.Atoi(e.Param("id_profesi"))
+	id_profesi, err := strconv.Atoi(e.Param("id_profesi"))
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Failed Convert"))
 	}
@@ -97,8 +96,6 @@ func (uc *AdminHandler) DeleteDataProfesi(e echo.Context) error {
 
 	return e.JSON(http.StatusOK, helper.SuccessResponse("Success Delete Profesi"))
 }
-
-
 
 func (uc *AdminHandler) CreateBiaya(e echo.Context) error {
 	input := dto.RequestCreateBiaya{}
@@ -119,4 +116,30 @@ func (uc *AdminHandler) CreateBiaya(e echo.Context) error {
 	}
 
 	return e.JSON(http.StatusOK, helper.SuccessResponse("Success Create Biaya Transport"))
+}
+
+func (uc *AdminHandler) UpdateBiaya(e echo.Context) error {
+	input := dto.RequestCreateBiaya{}
+	_, role := jwt.ExtractToken(e)
+
+	id, err := strconv.Atoi(e.Param("id"))
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse("Failed Convert"))
+	}
+
+	if role != "admin" {
+		return e.JSON(http.StatusUnauthorized, helper.FailedResponse("Acces Denied"))
+	}
+
+	if err := e.Bind(&input); err != nil {
+		return err
+	}
+
+	inputModel := dto.RequestCreateBiayaToCore(input)
+	err = uc.AdminService.UpdateBiaya(uint(id), inputModel)
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, helper.FailedResponse(err.Error()))
+	}
+
+	return e.JSON(http.StatusOK, helper.SuccessResponse("Success Update Biaya Transport"))
 }

@@ -1,92 +1,82 @@
 package gmaps
 
 import (
-    "encoding/json"
-    "fmt"
-    "io"
-    "math"
-    "net/http"
-    "os"
+	"encoding/json"
+	"fmt"
+	"math"
+	"net/http"
+	"os"
 
-    "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
+type DistanceMatrixResponse struct {
+	Rows []struct {
+		Elements []struct {
+			Distance struct {
+				Value float64 `json:"value"`
+			} `json:"distance"`
+		} `json:"elements"`
+	} `json:"rows"`
+}
+
 func CalculateDistanceFromGMaps(userLat, userLng, teknisiLat, teknisiLng float64) (float64, error) {
-    godotenv.Load()
-    url := buildDistanceURL(userLat, userLng, teknisiLat, teknisiLng)
+	godotenv.Load()
+	url := buildDistanceURL(userLat, userLng, teknisiLat, teknisiLng)
 
-    response, err := getDistanceResponse(url)
-    if err != nil {
-        return 0, err
-    }
+	response, err := getDistanceResponse(url)
+	if err != nil {
+		return 0, err
+	}
 
-    distance, err := extractDistance(response)
-    if err != nil {
-        return 0, err
-    }
+	distance, err := extractDistance(response)
+	if err != nil {
+		return 0, err
+	}
 
-    return distance, nil
+	return distance, nil
 }
 
 func buildDistanceURL(userLat, userLng, teknisiLat, teknisiLng float64) string {
-    apiKey := os.Getenv("API_KEY")
-    return fmt.Sprintf("https://maps.googleapis.com/maps/api/distancematrix/json?origins=%f,%f&destinations=%f,%f&key=%s", userLat, userLng, teknisiLat, teknisiLng, apiKey)
+	apiKey := os.Getenv("API_KEY")
+	return fmt.Sprintf("https://maps.googleapis.com/maps/api/distancematrix/json?origins=%f,%f&destinations=%f,%f&key=%s", userLat, userLng, teknisiLat, teknisiLng, apiKey)
 }
 
-func getDistanceResponse(url string) (map[string]interface{}, error) {
-    client := &http.Client{}
-    req, err := http.NewRequest("GET", url, nil)
-    if err != nil {
-        return nil, err
-    }
+func getDistanceResponse(url string) (DistanceMatrixResponse, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return DistanceMatrixResponse{}, err
+	}
 
-    resp, err := client.Do(req)
-    if err != nil {
-        return nil, err
-    }
-    defer resp.Body.Close()
+	resp, err := client.Do(req)
+	if err != nil {
+		return DistanceMatrixResponse{}, err
+	}
+	defer resp.Body.Close()
 
-    if resp.StatusCode != http.StatusOK {
-        return nil, fmt.Errorf("gagal menghitung jarak. Status code: %d", resp.StatusCode)
-    }
+	if resp.StatusCode != http.StatusOK {
+		return DistanceMatrixResponse{}, fmt.Errorf("gagal menghitung jarak. Status code: %d", resp.StatusCode)
+	}
 
-    body, err := io.ReadAll(resp.Body)
-    if err != nil {
-        return nil, err
-    }
+	var response DistanceMatrixResponse
+	err = json.NewDecoder(resp.Body).Decode(&response)
+	if err != nil {
+		return DistanceMatrixResponse{}, err
+	}
 
-    var response map[string]interface{}
-    err = json.Unmarshal(body, &response)
-    if err != nil {
-        return nil, err
-    }
-
-    return response, nil
+	return response, nil
 }
 
-func extractDistance(response map[string]interface{}) (float64, error) {
-    rows, rowsExist := response["rows"].([]interface{})
-    if !rowsExist || len(rows) == 0 {
-        return 0, fmt.Errorf("gagal menghitung jarak. Invalid response from Google Maps API")
-    }
+func extractDistance(response DistanceMatrixResponse) (float64, error) {
+	if len(response.Rows) == 0 || len(response.Rows[0].Elements) == 0 {
+		return 0, fmt.Errorf("gagal menghitung jarak. Invalid response from Google Maps API")
+	}
 
-    elements, elementsExist := rows[0].(map[string]interface{})["elements"].([]interface{})
-    if !elementsExist || len(elements) == 0 {
-        return 0, fmt.Errorf("gagal menghitung jarak. Invalid response from Google Maps API")
-    }
+	distanceValue := response.Rows[0].Elements[0].Distance.Value
 
-    distance, distanceExist := elements[0].(map[string]interface{})["distance"].(map[string]interface{})
-    if !distanceExist {
-        return 0, fmt.Errorf("gagal menghitung jarak. Invalid response from Google Maps API")
-    }
+	distanceInKilometers := distanceValue / 1000
+	roundedDistance := math.Round(distanceInKilometers*10) / 10
 
-    distanceValue, valueExist := distance["value"].(float64)
-    if !valueExist {
-        return 0, fmt.Errorf("gagal menghitung jarak. Invalid response from Google Maps API")
-    }
-
-    distanceInKilometers := float64(distanceValue) / 1000
-    roundedDistance := math.Round(distanceInKilometers*10) / 10
-
-    return roundedDistance, nil
+	return roundedDistance, nil
 }

@@ -87,8 +87,17 @@ func (us *userService) GetAll() ([]entity.Core, error) {
 	return users, err
 }
 
+func (us *userService) GetUserById(id_user uint, role string) (entity.Core, error) {
+	users, err := us.userRepository.SelectUserById(id_user,role)
+	if err != nil {
+		return entity.Core{}, err
+	}
+
+	return users, err
+}
+
 func (us *userService) GetById(id_user uint) ([]entity.Core, error) {
-	users, err := us.userRepository.SelectById(id_user)
+	users, err := us.userRepository.SelectByIdWithFeedback(id_user)
 	if err != nil {
 		return nil, err
 	}

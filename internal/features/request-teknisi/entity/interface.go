@@ -9,7 +9,6 @@ type UserRequestRepositoryInterface interface {
 	SelectById(userid, id int) ([]Core, error)
 	UpdateStatusClaims(userid, id int, data Core) error
 	UpdateClaims(id int, data Core) error
-	// Delete(id int, userid int) (row int, err error)
 }
 
 type UserRequestServiceInterface interface {
@@ -19,7 +18,4 @@ type UserRequestServiceInterface interface {
 	GetById(userid, id int) ([]Core, error)
 	ClaimRequest(id_request int, data Core) error
 	KonfirmasiBiaya(id_user,id_request int, data Core) error
-	// GetById(id int, userid int) (Core, error)
-	// Update(id int, userid int, input Core) (data Core, err error)
-	// Delete(id int, userid int) (err error)
 }

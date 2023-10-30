@@ -8,6 +8,7 @@ import (
 func UserCoreToUserModel(dataCore Core) model.Users {
 	return model.Users{
 		Role:      dataCore.Role,
+		Rating:    dataCore.Rating,
 		Profesi:   dataCore.Profesi,
 		Nama:      dataCore.Nama,
 		NIK:       dataCore.NIK,
@@ -42,21 +43,22 @@ func ListCoreFeedbackToModelFeedback(dataCore []_feedback.CoreFeedback) []model.
 
 func UserModelToUserCore(dataModel model.Users) Core {
 	return Core{
-		Id:        int(dataModel.ID),
-		Role:      dataModel.Role,
-		Profesi:   dataModel.Profesi,
-		Nama:      dataModel.Nama,
-		NIK:       dataModel.NIK,
-		Alamat:    dataModel.Alamat,
-		Longitude: dataModel.Longitude,
-		Latitude:  dataModel.Latitude,
-		No_telp:   dataModel.No_telp,
-		Email:     dataModel.Email,
-		Password:  dataModel.Password,
-		Feedback: ListModelFeedbackToCoreFeedback(dataModel.Feedback),
-		Status:    dataModel.Status,
-		CreatedAt: dataModel.CreatedAt,
-		UpdatedAt: dataModel.UpdatedAt,
+		Id:          int(dataModel.ID),
+		Role:        dataModel.Role,
+		Rating:      dataModel.Rating,
+		Profesi: dataModel.Profesi,
+		Nama:        dataModel.Nama,
+		NIK:         dataModel.NIK,
+		Alamat:      dataModel.Alamat,
+		Longitude:   dataModel.Longitude,
+		Latitude:    dataModel.Latitude,
+		No_telp:     dataModel.No_telp,
+		Email:       dataModel.Email,
+		Password:    dataModel.Password,
+		Feedback:    ListModelFeedbackToCoreFeedback(dataModel.Feedback),
+		Status:      dataModel.Status,
+		CreatedAt:   dataModel.CreatedAt,
+		UpdatedAt:   dataModel.UpdatedAt,
 	}
 }
 

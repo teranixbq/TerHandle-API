@@ -1,15 +1,19 @@
 package model
 
 import (
+	"crypto/sha256"
+	"encoding/binary"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Users struct {
 	gorm.Model
-	Role      string     `gorm:"type:enum('admin', 'user', 'teknisi');default:'user'"`
-	Profesi   string     `json:"profesi" form:"profesi"`
+	Role      string `gorm:"type:enum('admin', 'user', 'teknisi');default:'user'"`
+	Rating    float64
+	Profesi   string     `json:"profesi" form:"profesi" gorm:"foreignKey:NamaProfesi;default:null"`
 	Nama      string     `json:"nama" form:"nama"`
 	NIK       int        `json:"nik" form:"nik"`
 	Alamat    string     `json:"alamat" form:"alamat"`
@@ -22,6 +26,12 @@ type Users struct {
 	Feedback  []Feedback `gorm:"foreignKey:TeknisiID"`
 	CreatedAt time.Time  `gorm:"type:DATETIME(0)"`
 	UpdatedAt time.Time  `gorm:"type:DATETIME(0)"`
+	Profesis  Profesi    `gorm:"foreignKey:Profesi;references:NamaProfesi"`
+}
+
+type Profesi struct {
+	Id          uint   `gorm:"primaryKey"`
+	NamaProfesi string `json:"nama_profesi" form:"nama_profesi" gorm:"type:varchar(255);index"`
 }
 
 type RequestTeknisi struct {
@@ -51,6 +61,11 @@ type Foto struct {
 	Foto             string `form:"foto"`
 }
 
+type Transport struct {
+	Id    uint
+	Biaya float64 `json:"biaya" form:"biaya"`
+}
+
 type Feedback struct {
 	gorm.Model
 	RequestTeknisiID uint           `json:"request_id" form:"request_id" gorm:"foreignKey:ID"`
@@ -63,4 +78,26 @@ type Feedback struct {
 	FeedbackUser     Users          `gorm:"foreignKey:UsersID"`
 	TargetUser       Users          `gorm:"foreignKey:TeknisiID"`
 	RequestUser      RequestTeknisi `gorm:"foreignKey:RequestTeknisiID"`
+}
+
+func (u *Users) BeforeCreate(tx *gorm.DB) (err error) {
+	myUUID := uuid.New()
+
+	hash := sha256.Sum256(myUUID[:])
+	Iduint := binary.BigEndian.Uint32(hash[:16])
+
+	u.ID = uint(Iduint)
+
+	return nil
+}
+
+func (r *RequestTeknisi) BeforeCreate(tx *gorm.DB) (err error) {
+	myUUID := uuid.New()
+
+	hash := sha256.Sum256(myUUID[:])
+	Iduint := binary.BigEndian.Uint32(hash[:16])
+
+	r.ID = uint(Iduint)
+
+	return nil
 }

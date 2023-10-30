@@ -6,7 +6,8 @@ type UserRepositoryInterface interface {
 	Update(id_user uint, data Core) error
 	UpdateField(id_user uint, field string, value string) error
 	SelectAll() ([]Core, error)
-	SelectById(id_user uint) ([]Core, error)
+	SelectUserById(id_user uint, role string) (Core, error)
+	SelectByIdWithFeedback(id_user uint) ([]Core, error)
 	DeleteById(id_user uint) error
 }
 
@@ -16,6 +17,7 @@ type UserServiceInterface interface {
 	CreateUpdateDetail(id_user uint, data Core) error
 	RequestTeknisiRole(id_user uint) error
 	GetAll() ([]Core, error)
+	GetUserById(id_user uint, role string) (Core, error)
 	GetById(id_user uint) ([]Core, error)
 	DeleteById(id_user uint) error
 }

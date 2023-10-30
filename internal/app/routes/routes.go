@@ -78,5 +78,6 @@ func InitRoute(e *echo.Echo, db *gorm.DB) {
 	admin.PUT("profesi/:id_profesi",adminHandler.UpdateDataProfesi)
 	admin.DELETE("profesi/:id_profesi",adminHandler.DeleteDataProfesi)
 	admin.POST("transport",adminHandler.CreateBiaya)
+	admin.PUT("transport/:id",adminHandler.UpdateBiaya)
 
 }

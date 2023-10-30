@@ -117,13 +117,3 @@ func (ur *FeedbackRepository) UpdateFeedback(id_user, id_feedback, id_request ui
 	return nil
 }
 
-// func (ur *FeedbackRepository) GetFeedbacksForUser(id_teknisi uint) ([]entity.CoreFeedback, error) {
-// 	var feedbacks []model.Feedback
-// 	err := ur.db.Where("id = ? ", id_teknisi).Find(&feedbacks).Error
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	feedbacksModel := entity.FeedbackModelToCoreFeedbackList(feedbacks)
-// 	return feedbacksModel, nil
-// }

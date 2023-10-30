@@ -6,6 +6,7 @@ type AdminRepositoryInterface interface {
 	Update(id_profesi uint, data CoreProfesi) error
 	Delete(id_profesi uint) error
 	InsertBiaya(data CoreTransport) error
+	UpdateBiaya(id uint,data CoreTransport) error
 }
 
 type AdminServiceInterface interface {
@@ -14,5 +15,5 @@ type AdminServiceInterface interface {
 	Update(id_profesi uint, data CoreProfesi) error
 	Delete(id_profesi uint) error
 	InsertBiaya(data CoreTransport) error
-	//UpdateProfesi(userid, id_Profesi, id_request uint, data CoreProfesi) error
+	UpdateBiaya(id uint, data CoreTransport) error 
 }

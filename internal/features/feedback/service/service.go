@@ -20,6 +20,10 @@ func (fr *feedbackService) Create(payload entity.CoreFeedback) error {
 	if payload.TeknisiID == 0 || payload.UsersID == 0 || payload.RequestTeknisiID == 0 || payload.Ulasan == "" {
 		return errors.New("harap lengkapi data dengan benar")
 	}
+
+	if payload.Rating > 5 {
+		return errors.New("tidak boleh lebih dari lima")
+	}
 	
 	err := fr.feedbackRepository.SelectByIdAndRole(payload.UsersID, payload.TeknisiID, "user", "teknisi")
 	if err != nil {

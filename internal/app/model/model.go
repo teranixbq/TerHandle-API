@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"time"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -20,9 +21,9 @@ type Users struct {
 	Longitude float64    `json:"longitude" form:"longitude"`
 	Latitude  float64    `json:"latitude" form:"latitude"`
 	No_telp   int        `json:"no_telp" form:"no_telp"`
-	Email     string     `json:"email" form:"email" `
-	Password  string     `json:"password" form:"password"`
-	Status    string     `gorm:"type:enum('offline','online');default:'online'"`
+	Email     string     `json:"email" form:"email" gorm:"not null;unique" valid:"required~your email is required, email~invalid email format"`
+	Password  string     `json:"password" form:"password" valid:"required~your password is required"`
+	Status    string     `gorm:"type:enum('offline','online');default:'offline'"`
 	Feedback  []Feedback `gorm:"foreignKey:TeknisiID"`
 	CreatedAt time.Time  `gorm:"type:DATETIME(0)"`
 	UpdatedAt time.Time  `gorm:"type:DATETIME(0)"`
@@ -81,6 +82,12 @@ type Feedback struct {
 }
 
 func (u *Users) BeforeCreate(tx *gorm.DB) (err error) {
+
+	_, err = govalidator.ValidateStruct(u)
+	if err != nil {
+		return err
+	}
+
 	myUUID := uuid.New()
 
 	hash := sha256.Sum256(myUUID[:])
@@ -101,3 +108,4 @@ func (r *RequestTeknisi) BeforeCreate(tx *gorm.DB) (err error) {
 
 	return nil
 }
+

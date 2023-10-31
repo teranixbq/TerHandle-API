@@ -27,6 +27,7 @@ type RequestCreateDetail struct {
 	No_telp   int
 	Email     string
 	Status    string
+	Password string `json:"password" form:"password"`
 }
 
 func RequestCreateDetailToCore(dataRequest RequestCreateDetail) entity.Core {
@@ -39,6 +40,7 @@ func RequestCreateDetailToCore(dataRequest RequestCreateDetail) entity.Core {
 		No_telp:   dataRequest.No_telp,
 		Email:     dataRequest.Email,
 		Status:    dataRequest.Status,
+		Password: dataRequest.Password,
 	}
 }
 

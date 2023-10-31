@@ -42,7 +42,10 @@ func (uc *userHandler) Create(e echo.Context) error {
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, "Failed to receive files")
 	}
-	files := fileForm.File["foto"]
+	files,ok := fileForm.File["foto"]
+	if !ok || len(files) == 0 {
+		return e.JSON(http.StatusBadRequest, "Harap sertakan foto masalah terkait")
+	}
 
 	fotos, err := cloudflare.ProcessUploadFiles(files)
 	if err != nil {
@@ -130,7 +133,7 @@ func (uc *userHandler) UpdateStatusClaim(e echo.Context) error {
 		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
 	}
 
-	if role == "user" || role == "admin"{
+	if role == "user" || role == "admin" {
 		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
 	}
 
@@ -235,7 +238,7 @@ func (uc *userHandler) UpdateStatusSelesai(e echo.Context) error {
 		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
 	}
 
-	if role == "teknisi" || role == "admin"{
+	if role == "teknisi" || role == "admin" {
 		return e.JSON(http.StatusForbidden, helper.FailedResponse("Access denied"))
 	}
 
@@ -251,8 +254,6 @@ func (uc *userHandler) UpdateStatusSelesai(e echo.Context) error {
 
 	return e.JSON(http.StatusOK, helper.SuccessResponse("berhasil konfirmasi selesai request"))
 }
-
-
 
 // func (uc *userHandler) CreateDetail(e echo.Context) error {
 // 	input := dto.RequestCreateDetail{}

@@ -1,14 +1,12 @@
 package service
 
 import (
-	
+	"errors"
 	"terhandle/internal/features/feedback/entity"
-	//_requestTeknisi "terhandle/internal/features/request-teknisi/entity"
 )
 
 type feedbackService struct {
 	feedbackRepository entity.FeedbackRepositoryInterface
-	//requestTeknisi     _requestTeknisi.UserRequestRepositoryInterface
 }
 
 func NewUserService(fr entity.FeedbackRepositoryInterface) entity.FeedbackServiceInterface {
@@ -19,6 +17,10 @@ func NewUserService(fr entity.FeedbackRepositoryInterface) entity.FeedbackServic
 
 func (fr *feedbackService) Create(payload entity.CoreFeedback) error {
 
+	if payload.TeknisiID == 0 || payload.UsersID == 0 || payload.RequestTeknisiID == 0 || payload.Ulasan == "" {
+		return errors.New("harap lengkapi data dengan benar")
+	}
+	
 	err := fr.feedbackRepository.SelectByIdAndRole(payload.UsersID, payload.TeknisiID, "user", "teknisi")
 	if err != nil {
 		return err

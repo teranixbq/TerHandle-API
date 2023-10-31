@@ -3,15 +3,11 @@ package repository
 import (
 	"errors"
 	"fmt"
-	//"fmt"
 	"time"
 
 	"terhandle/internal/app/model"
 	"terhandle/internal/features/feedback/entity"
 	"terhandle/internal/utils/helper"
-
-	//"terhandle/internal/utils/helper"
-
 	"gorm.io/gorm"
 )
 
@@ -31,7 +27,7 @@ func (ur *FeedbackRepository) Insert(id_request ,id_teknisi uint, data entity.Co
 	users := model.Users{}
 
 	if err := ur.db.Where("id = ? AND selesai = 1", id_request).First(&request).Error; err != nil {
-		return err
+		return errors.New("data tidak ada atau request belum selesai")
 	}
 
 	if err := ur.db.Where("request_teknisi_id = ?", id_request).First(&userRequest).Error; err != nil {

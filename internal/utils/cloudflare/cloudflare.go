@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"terhandle/internal/features/request-teknisi/dto"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
@@ -57,15 +58,17 @@ func UploadFile(fileForm *multipart.FileHeader) (string, error) {
 	randomKey := uuid.New().String()
 	contentType := "image/jpeg"
 
-    if ext := filepath.Ext(fileForm.Filename); ext != "" {
-        ext = strings.TrimPrefix(ext, ".")
-        switch ext {
-        case "jpg", "jpeg":
-            contentType = "image/jpeg"
-        case "png":
-            contentType = "image/png"
-        }
-    }
+	if ext := filepath.Ext(fileForm.Filename); ext != "" {
+		ext = strings.TrimPrefix(ext, ".")
+		switch ext {
+		case "jpg", "jpeg":
+			contentType = "image/jpeg"
+		case "png":
+			contentType = "image/png"
+		default:
+			return "",errors.New("file harus berupa gambar png/jpeg")
+		}
+	}
 
 	input := &s3.PutObjectInput{
 		Bucket:      &bucketName,
@@ -78,24 +81,22 @@ func UploadFile(fileForm *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 	// publicURL := fmt.Sprintf("https://pub-d82858f6b028480cb736d00b2cfdbe32.r2.dev/%s", randomKey)
-	publicURL := fmt.Sprintf("https://terhandle.apicode.my.id/%s", randomKey)
+	publicURL := fmt.Sprintf("https://cloud.apicode.my.id/%s", randomKey)
 
 	return publicURL, nil
 }
 
-
 func ProcessUploadFiles(files []*multipart.FileHeader) ([]dto.RequestFoto, error) {
-    var fotos []dto.RequestFoto
+	var fotos []dto.RequestFoto
 
-    for _, file := range files {
-        url, err := UploadFile(file)
-        if err != nil {
-            return nil, errors.New("gagal upload file")
-        }
+	for _, file := range files {
+		url, err := UploadFile(file)
+		if err != nil {
+			return nil, errors.New("file harus berupa gambar png/jpeg")
+		}
 
-        fotos = append(fotos, dto.RequestFoto{Foto: url})
-    }
+		fotos = append(fotos, dto.RequestFoto{Foto: url})
+	}
 
-    return fotos, nil
+	return fotos, nil
 }
-

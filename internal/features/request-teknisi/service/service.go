@@ -1,23 +1,24 @@
 package service
 
 import (
+	"errors"
 	"terhandle/internal/features/request-teknisi/entity"
-
-	"github.com/go-playground/validator/v10"
 )
 
 type userService struct {
 	userRepository entity.UserRequestRepositoryInterface
-	validate       *validator.Validate
 }
 
 func NewUserService(ur entity.UserRequestRepositoryInterface) entity.UserRequestServiceInterface {
 
-	return &userService{userRepository: ur, validate: validator.New()}
+	return &userService{userRepository: ur}
 }
 
 func (us *userService) Create(payload entity.Core) error {
 
+	if payload.TeknisiID == 0 || payload.UsersID == 0 || payload.Deskripsi == ""{
+		return errors.New("harap lengkapi dengan benar")
+	}
 	err := us.userRepository.SelectByIdAndRole(int(payload.UsersID), int(payload.TeknisiID), "user", "teknisi")
 	if err != nil {
 		return err

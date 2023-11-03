@@ -2,7 +2,10 @@ module terhandle
 
 go 1.20
 
-require gorm.io/driver/mysql v1.5.2
+require (
+	github.com/golang/mock v1.6.0
+	gorm.io/driver/mysql v1.5.2
+)
 
 require (
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.14 // indirect

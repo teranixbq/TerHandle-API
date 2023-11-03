@@ -1,0 +1,461 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>service: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">terhandle/internal/features/admin/service/service.go (76.0%)</option>
+				
+				<option value="file1">terhandle/internal/features/feedback/service/service.go (89.5%)</option>
+				
+				<option value="file2">terhandle/internal/features/request-teknisi/service/service.go (82.9%)</option>
+				
+				<option value="file3">terhandle/internal/features/user/service/service.go (80.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package service
+
+import (
+        "terhandle/internal/features/admin/entity"
+)
+
+type AdminService struct {
+        AdminRepository entity.AdminRepositoryInterface
+}
+
+func NewUserService(Ad entity.AdminRepositoryInterface) entity.AdminServiceInterface <span class="cov8" title="1">{
+        return &amp;AdminService{
+                AdminRepository: Ad,
+        }
+}</span>
+
+func (Ad *AdminService) Create(payload entity.CoreProfesi) error <span class="cov8" title="1">{
+
+        err := Ad.AdminRepository.Insert(payload)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (Ad *AdminService) GetAll() ([]entity.CoreProfesi, error) <span class="cov8" title="1">{
+        profesiAll, err := Ad.AdminRepository.SelectAll()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return profesiAll, err</span>
+}
+
+func (Ad *AdminService) Update(id_profesi uint, payload entity.CoreProfesi) error <span class="cov8" title="1">{
+        err := Ad.AdminRepository.Update(id_profesi, payload)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (Ad *AdminService) Delete(id_profesi uint) error <span class="cov8" title="1">{
+        err := Ad.AdminRepository.Delete(id_profesi)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (Ad *AdminService) InsertBiaya(payload entity.CoreTransport) error <span class="cov8" title="1">{
+        err := Ad.AdminRepository.InsertBiaya(payload)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return err</span>
+}
+
+func (Ad *AdminService) UpdateBiaya(id uint, payload entity.CoreTransport) error <span class="cov8" title="1">{
+        err := Ad.AdminRepository.UpdateBiaya(id, payload)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return err</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package service
+
+import (
+        "errors"
+        "terhandle/internal/features/feedback/entity"
+)
+
+type feedbackService struct {
+        feedbackRepository entity.FeedbackRepositoryInterface
+}
+
+func NewUserService(fr entity.FeedbackRepositoryInterface) entity.FeedbackServiceInterface <span class="cov8" title="1">{
+        return &amp;feedbackService{
+                feedbackRepository: fr,
+        }
+}</span>
+
+func (fr *feedbackService) Create(payload entity.CoreFeedback) error <span class="cov8" title="1">{
+
+        if payload.TeknisiID == 0 || payload.UsersID == 0 || payload.RequestTeknisiID == 0 || payload.Ulasan == "" </span><span class="cov8" title="1">{
+                return errors.New("harap lengkapi data dengan benar")
+        }</span>
+
+        <span class="cov8" title="1">if payload.Rating &gt; 5 </span><span class="cov8" title="1">{
+                return errors.New("tidak boleh lebih dari lima")
+        }</span>
+        
+        <span class="cov8" title="1">err := fr.feedbackRepository.SelectByIdAndRole(payload.UsersID, payload.TeknisiID, "user", "teknisi")
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">err = fr.feedbackRepository.SelectByIdAndIdUser(payload.RequestTeknisiID, payload.UsersID, payload.TeknisiID)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">err = fr.feedbackRepository.Insert(payload.RequestTeknisiID,payload.TeknisiID,payload)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (fr *feedbackService) UpdateFeedback(userid ,id_feedback,id_request uint, payload entity.CoreFeedback) error<span class="cov8" title="1">{
+
+        err := fr.feedbackRepository.UpdateFeedback(userid,id_feedback,id_request,payload)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package service
+
+import (
+        "errors"
+        "terhandle/internal/features/request-teknisi/entity"
+)
+
+type userService struct {
+        userRepository entity.UserRequestRepositoryInterface
+}
+
+func NewUserService(ur entity.UserRequestRepositoryInterface) entity.UserRequestServiceInterface <span class="cov8" title="1">{
+
+        return &amp;userService{userRepository: ur}
+}</span>
+
+func (us *userService) Create(payload entity.Core) error <span class="cov8" title="1">{
+
+        if payload.TeknisiID == 0 || payload.UsersID == 0 || payload.Deskripsi == ""</span><span class="cov8" title="1">{
+                return errors.New("harap lengkapi dengan benar")
+        }</span>
+        <span class="cov8" title="1">err := us.userRepository.SelectByIdAndRole(int(payload.UsersID), int(payload.TeknisiID), "user", "teknisi")
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">err = us.userRepository.Insert(payload)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (us *userService) CreateUpdateDetail(userid int, data entity.Core) error <span class="cov8" title="1">{
+
+        if err := us.userRepository.Update(userid, data); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (us *userService) GetAllById(userid int) ([]entity.Core, error) <span class="cov8" title="1">{
+        history, err := us.userRepository.SelectAllById(userid)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return history, nil</span>
+}
+
+func (us *userService) GetById(userid, id int) ([]entity.Core, error) <span class="cov8" title="1">{
+        result, err := us.userRepository.SelectById(userid, id)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return result, nil</span>
+}
+
+func (us *userService) ClaimRequest(id_request int, data entity.Core) error <span class="cov8" title="1">{
+
+        if err := us.userRepository.UpdateClaims(id_request, data); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if err := us.userRepository.UpdateField(id_request, "status", "konfirmasi biaya"); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (us *userService) KonfirmasiBiaya(id_user, id_request int, data entity.Core) error <span class="cov8" title="1">{
+
+        if err := us.userRepository.UpdateStatusKonfirmBiaya(id_user, id_request, data); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if err := us.userRepository.UpdateField(id_request, "status", "diproses"); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (us *userService) BatalkanRequest(id_user, id_request int, data entity.Core) error <span class="cov8" title="1">{
+
+        if err := us.userRepository.UpdateStatusBatal(id_user, id_request, data); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+        <span class="cov8" title="1">if err := us.userRepository.UpdateField(id_request, "status", "dibatalkan"); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (us *userService) SelesaikanRequest(id_user, id_request int, data entity.Core) error <span class="cov8" title="1">{
+
+        if err := us.userRepository.UpdateStatusSelesai(id_user, id_request, data); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+        <span class="cov8" title="1">if err := us.userRepository.UpdateField(id_request, "status", "selesai"); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package service
+
+import (
+        "errors"
+        "fmt"
+        "terhandle/internal/features/user/dto"
+        "terhandle/internal/features/user/entity"
+
+        "github.com/go-playground/validator/v10"
+        "github.com/go-sql-driver/mysql"
+)
+
+type userService struct {
+        userRepository entity.UserRepositoryInterface
+        validate       *validator.Validate
+}
+
+func NewUserService(ur entity.UserRepositoryInterface) entity.UserServiceInterface <span class="cov8" title="1">{
+
+        return &amp;userService{userRepository: ur, validate: validator.New()}
+}</span>
+
+func (us *userService) Create(payload entity.Core) error <span class="cov8" title="1">{
+        fmt.Println(payload.Email,payload.Password,payload.Nama)
+        if payload.Email == "" || payload.Password == "" || payload.Nama == "" </span><span class="cov0" title="0">{
+                return errors.New("error. email dan password harus diisi")
+        }</span>
+
+        // errValidate := us.validate.Struct(payload)
+
+        // if errValidate != nil {
+        //         return errValidate
+        // }
+
+        <span class="cov8" title="1">err := us.userRepository.Insert(payload)
+        if err != nil </span><span class="cov8" title="1">{
+                if mysqlErr, ok := err.(*mysql.MySQLError); ok </span><span class="cov0" title="0">{
+                        if mysqlErr.Number == 1062 </span><span class="cov0" title="0">{
+                                return errors.New("email sudah terdaftar. Silakan gunakan email lain")
+                        }</span>
+                }
+                <span class="cov8" title="1">return err</span>
+        }
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (us *userService) Login(email, password string) (entity.Core, string, error) <span class="cov8" title="1">{
+        if email == "" || password == ""</span><span class="cov8" title="1">{
+                return entity.Core{}, "",errors.New("email dan password harus diisi")
+        }</span>
+
+        <span class="cov8" title="1">user := dto.RequestLogin{
+                Email:    email,
+                Password: password,
+        }
+
+        data, token, err := us.userRepository.Login(user.Email, user.Password)
+        if err != nil </span><span class="cov8" title="1">{
+                return data, "", err
+        }</span>
+        <span class="cov0" title="0">return data, token, nil</span>
+}
+
+func (us *userService) CreateUpdateDetail(id_user uint, data entity.Core) error <span class="cov8" title="1">{
+
+        if err := us.userRepository.Update(id_user, data); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (us *userService) RequestTeknisiRole(id_user uint) error <span class="cov8" title="1">{
+
+        if err := us.userRepository.UpdateField(id_user, "role", "teknisi"); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (us *userService) GetAll() ([]entity.Core, error) <span class="cov8" title="1">{
+        users, err := us.userRepository.SelectAll()
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return users, err</span>
+}
+
+func (us *userService) GetUserById(id_user uint, role string) (entity.Core, error) <span class="cov8" title="1">{
+        users, err := us.userRepository.SelectUserById(id_user,role)
+        if err != nil </span><span class="cov8" title="1">{
+                return entity.Core{}, err
+        }</span>
+
+        <span class="cov0" title="0">return users, err</span>
+}
+
+func (us *userService) GetById(id_user uint) ([]entity.Core, error) <span class="cov8" title="1">{
+        users, err := us.userRepository.SelectByIdWithFeedback(id_user)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return users, err</span>
+}
+
+
+func (us *userService) DeleteById(id_user uint) error <span class="cov8" title="1">{
+        err := us.userRepository.DeleteById(id_user)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

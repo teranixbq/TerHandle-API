@@ -1,0 +1,16 @@
+mode: set
+terhandle/internal/features/feedback/service/service.go:12.92,16.2 1 1
+terhandle/internal/features/feedback/service/service.go:18.70,20.109 1 1
+terhandle/internal/features/feedback/service/service.go:20.109,22.3 1 1
+terhandle/internal/features/feedback/service/service.go:24.2,24.24 1 1
+terhandle/internal/features/feedback/service/service.go:24.24,26.3 1 1
+terhandle/internal/features/feedback/service/service.go:28.2,29.16 2 1
+terhandle/internal/features/feedback/service/service.go:29.16,31.3 1 1
+terhandle/internal/features/feedback/service/service.go:33.2,34.16 2 1
+terhandle/internal/features/feedback/service/service.go:34.16,36.3 1 0
+terhandle/internal/features/feedback/service/service.go:38.2,39.16 2 1
+terhandle/internal/features/feedback/service/service.go:39.16,41.3 1 0
+terhandle/internal/features/feedback/service/service.go:43.2,43.12 1 1
+terhandle/internal/features/feedback/service/service.go:46.114,49.16 2 1
+terhandle/internal/features/feedback/service/service.go:49.16,51.3 1 1
+terhandle/internal/features/feedback/service/service.go:53.2,53.12 1 1

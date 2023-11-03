@@ -1,19 +1,19 @@
 package dto
 
-import ( 
+import (
+	_feedbackdto "terhandle/internal/features/feedback/dto"
 	"terhandle/internal/features/request-teknisi/entity"
-	_feedbackdto"terhandle/internal/features/feedback/dto"
 )
 
 type ResponHistoryUser struct {
-	Id        uint
-	TeknisiID uint
-	Foto      []ResponFotoUser
-	Deskripsi string
-	Jarak     float64
-	Biaya     float64
-	Status    string
-	Feedback  []_feedbackdto.ResponseFeedback
+	Id        uint `json:"id"`
+	TeknisiID uint `json:"teknisi_id"`
+	Foto      []ResponFotoUser `json:"foto"`
+	Deskripsi string `json:"deskripsi"`
+	Jarak     float64 `json:"jarak"`
+	Biaya     float64	`json:"biaya"`
+	Status    string	`json:"status"`
+	Feedback  []_feedbackdto.ResponseFeedback `json:"feedback"`
 }
 
 type ResponFotoUser struct {
@@ -56,14 +56,14 @@ func CoreToResponseHistoryUserList(dataCore []entity.Core) []ResponHistoryUser {
 }
 
 type ResponHistoryTeknisi struct {
-	Id        uint
-	UsersID   uint
-	Foto      []ResponFotoTeknisi
-	Deskripsi string
-	Jarak     float64
-	Biaya     float64
-	Status    string
-	Feedback  []_feedbackdto.ResponseFeedback
+	Id        uint `json:"id"`
+	UsersID   uint `json:"user_id"`
+	Foto      []ResponFotoTeknisi `json:"foto"`
+	Deskripsi string `json:"deskripsi"`
+	Jarak     float64 `json:"jarak"`
+	Biaya     float64	`json:"biaya"`
+	Status    string	`json:"status"`
+	Feedback  []_feedbackdto.ResponseFeedback `json:"feedback"`
 }
 
 type ResponFotoTeknisi struct {
